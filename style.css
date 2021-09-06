@@ -98,11 +98,6 @@ body {
   transition: all 0.3s ease-in;
 }
 
-.submit-button:hover {
-  width: 55%;
-  height: 15%;
-}
-
 .backlog-modal {
   display: none;
 }
@@ -119,8 +114,16 @@ body {
   color: var(--text-color);
   font-weight: bolder;
   letter-spacing: 2px;
-  text-shadow: 2px 2px 5px var(--text-color);
   font-size: 20px;
+}
+
+.valid-window {
+  height: 26px;
+}
+
+.columns-modal .valid-text {
+  color: red;
+  transition: 3s;
 }
 
 .columns-submit {
@@ -130,7 +133,6 @@ body {
 
 h1 {
   letter-spacing: 2px;
-  text-shadow: 2px 2px 5px var(--text-color);
   color: var(--text-color);
 }
 
@@ -254,11 +256,6 @@ ul {
   transition: all 0.3s ease-in;
 }
 
-.drag-item:hover {
-  padding: 14px;
-  margin: 11px;
-}
-
 .drag-item:focus {
   outline: none;
   background-color: white;
@@ -350,7 +347,6 @@ ul {
   font-weight: bold;
   font-size: 20px;
   letter-spacing: 2px;
-  text-shadow: 2px 2px 5px var(--text-color);
 }
 
 .add-btn-backlog {
@@ -361,7 +357,6 @@ ul {
   bottom: 10%;
   background-color: var(--additional-color);
   color: var(--text-color);
-  text-shadow: 2px 2px 5px var(--text-color);
   justify-content: center;
   display: flex;
   align-items: center;
@@ -373,12 +368,6 @@ ul {
   cursor: pointer;
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
   transition: all 0.3s ease-in;
-}
-
-.add-btn-backlog:hover {
-  width: 23%;
-  height: 6%;
-  font-size: 24px;
 }
 
 .button-container {

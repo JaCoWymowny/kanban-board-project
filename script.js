@@ -26,11 +26,13 @@ let onHoldPrio = [];
 let listPrio = [];
 
 let labels = [
+  {name: ""},
   {name: 'Front-end'},
   {name: 'Back-end'}
 ];
 
 let priority = [
+  {name: ""},
   {name: 'Low'},
   {name: 'Mid'},
   {name: 'ASAP'}
@@ -99,12 +101,20 @@ function htmlTree() {
     addModal.classList.add('columns-modal');
     const addItemModal = document.createElement('span');
     addItemModal.classList.add('add-item');
+    addItemModal.classList.add('validate');
     addItemModal.contentEditable = true;
+
+    const validateWindow = document.createElement('div');
+    validateWindow.classList.add('valid-window');
+
+    const validateSpan = document.createElement('span');
+    validateSpan.classList.add('valid-text');
+    validateSpan.textContent = "Text Field Is Empty!";
 
     const modalSelectBoxPriority = document.createElement('div');
     modalSelectBoxPriority.classList.add('select-box');
     const prioritySpan = document.createElement('span');
-    prioritySpan.textContent = 'Choose priority: ';
+    prioritySpan.textContent = 'Priority: ';
     const selectPrio = document.createElement('select');
     selectPrio.classList.add('priority-choice');
     selectPrio.classList.add('select-menu');
@@ -112,7 +122,7 @@ function htmlTree() {
     const modalSelectBoxUser = document.createElement('div');
     modalSelectBoxUser.classList.add('select-box');
     const userSpan = document.createElement('span');
-    userSpan.textContent = 'Choose User';
+    userSpan.textContent = 'User: ';
     const selectUser = document.createElement('select');
     selectUser.classList.add('user-label');
     selectUser.classList.add('select-menu');
@@ -132,6 +142,8 @@ function htmlTree() {
     el.append(columnAddButton);
 
     addModal.append(addItemModal);
+    validateWindow.append(validateSpan)
+    addModal.append(validateWindow);
     modalSelectBoxPriority.append(prioritySpan, selectPrio);
     addModal.append(modalSelectBoxPriority);
     modalSelectBoxUser.append(userSpan, selectUser);
@@ -231,6 +243,9 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
           el.forEach((listElement, index) => {
             if (parseInt(actuallyId) === index) {
               tooglePriority.textContent = listElement;
+              if (listElement === "") {
+                tooglePriority.textContent = "Open priority window";
+              }
               if (tooglePriority.textContent === "Low") {
                 tooglePriority.style.color = 'white';
               }
@@ -261,11 +276,11 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
         unselectable.text = "Change Priority";
         unselectable.disabled = true;
         columnPriorityChoice[column].add(unselectable);
-        priority.forEach(function(itemss) {
-          if (columnPriorityChoice[column].length < 4) {
+        priority.forEach(function(items) {
+          if (columnPriorityChoice[column].length < 5) {
             const priorityOption = document.createElement('option');
 
-            priorityOption.text = itemss.name;
+            priorityOption.text = items.name;
 
             columnPriorityChoice[column].add(priorityOption);
           }
@@ -274,7 +289,11 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
 
             let editChoice = columnPriorityChoice[column].value;
 
-            if (editChoice === "Low") {
+            if (editChoice === "") {
+              tooglePriority.textContent = "Priority is not set";
+              tooglePriority.style.color = 'white';
+            }
+              else if (editChoice === "Low") {
               tooglePriority.textContent = "Low";
               tooglePriority.style.color = 'white';
             } else if (editChoice === "Mid") {
@@ -291,7 +310,7 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       const responsibleUserBox = document.createElement('div');
       const responsibleUserValue = document.createElement('span');
       responsibleUserValue.classList.add('temporary-color');
-      responsibleUserValue.textContent = 'Responsible worker: ';
+      responsibleUserValue.textContent = 'Label: ';
       const responsibleObjectTest = document.createElement('span');
       responsibleObjectTest.classList.add('choice-user');
       responsibleObjectTest.classList.add('temporary-color');
@@ -328,6 +347,9 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
         toggleButtonCounter = 0;
         listEl.textContent = openTaskText.textContent;
         listEl.dataset.prio = tooglePriority.textContent;
+        if (listEl.dataset.prio === "Priority is not set") {
+          listEl.dataset.prio = "";
+        }
         openTask.remove();
         rebuildArrays();
       })
@@ -413,7 +435,7 @@ function UserListToTask() {
   labels.forEach(function(item) {
     userLabel.forEach((el) => {
       const labelOption = document.createElement('option');
-      if (el.length < 2) {
+      if (el.length < 3) {
         labelOption.text = item.name;
         el.add(labelOption);
       }
@@ -423,7 +445,7 @@ function UserListToTask() {
   priority.forEach(function(item) {
     priorityChoice.forEach((el) => {
       const priorityOption = document.createElement('option');
-      if (el.length < 3) {
+      if (el.length < 4) {
         priorityOption.text = item.name;
         el.add(priorityOption);
       }
@@ -456,6 +478,9 @@ function addToColumn(column) {
 function showInputBox(column) {
   if (showInputBoxCounter === 0) {
     const columnsModal = document.querySelectorAll('.columns-modal');
+    const validationText = document.querySelectorAll('.valid-text');
+
+    validationText[column].style.display = 'none';
     columnsModal[column].style.display = 'flex';
     showInputBoxCounter++;
     UserListToTask();
@@ -469,22 +494,38 @@ function hideInputBox(column) {
   const columnsModal = document.querySelectorAll('.columns-modal');
   const userLabel = document.querySelectorAll('.user-label');
   const priorityChoice = document.querySelectorAll('.priority-choice');
+  const saveButton = document.querySelectorAll('.submit-button');
+  const addItemTextField = document.querySelectorAll('.validate');
+  const validationText = document.querySelectorAll('.valid-text');
 
-  columnsModal[column].style.display = 'none';
-  userLabel.forEach((el, index) => {
-    if (index === column) {
-      choosenWorker = el.options[el.selectedIndex].text;
-    }
-    el.selectedIndex = 0;
-  })
+  saveButton.forEach((el, indexing) => {
+    if (indexing === column) {
+      if (addItemTextField[column].textContent !== "") {
+        columnsModal[column].style.display = 'none';
+        userLabel.forEach((el, index) => {
+          if (index === column) {
+            choosenWorker = el.options[el.selectedIndex].text;
+          }
+          el.selectedIndex = 0;
+        })
 
-  priorityChoice.forEach((el, index) => {
-    if (index === column) {
-      choosenPriority = el.options[el.selectedIndex].text;
+        priorityChoice.forEach((el, index) => {
+          if (index === column) {
+            choosenPriority = el.options[el.selectedIndex].text;
+          }
+          el.selectedIndex = 0;
+        })
+        addToColumn(column);
+        console.log(`added to: ${column}`)
+      } else {
+        validationText[column].style.display = 'block';
+        setTimeout(function() {
+          validationText[column].style.display = 'none';
+        }, 3000);
+        console.log(`pełno: ${column}`);
+      }
     }
-    el.selectedIndex = 0;
   })
-  addToColumn(column);
 }
 
 // Allows arrays to reflect Drag and Drop items
