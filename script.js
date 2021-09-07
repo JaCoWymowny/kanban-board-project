@@ -99,6 +99,14 @@ function htmlTree() {
     const addModal = document.createElement('div');
     addModal.classList.add('modal');
     addModal.classList.add('columns-modal');
+
+    const closeButtonX = document.createElement('button');
+    closeButtonX.classList.add('close-x');
+    closeButtonX.setAttribute('onclick', `closeInputBox(${index})`);
+    const awesomeIconX = document.createElement('i');
+    awesomeIconX.classList.add('far');
+    awesomeIconX.classList.add('fa-times-circle');
+    awesomeIconX.classList.add('fa-2x');
     const addItemModal = document.createElement('span');
     addItemModal.classList.add('add-item');
     addItemModal.classList.add('validate');
@@ -141,6 +149,9 @@ function htmlTree() {
     columnAddButton.append(addButtonBox);
     el.append(columnAddButton);
 
+
+    closeButtonX.append(awesomeIconX);
+    addModal.append(closeButtonX);
     addModal.append(addItemModal);
     validateWindow.append(validateSpan)
     addModal.append(validateWindow);
@@ -221,6 +232,20 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       openTask.classList.add('modal');
       openTask.classList.add('toggle-modal');
 
+      const closeButtonX = document.createElement('button');
+      closeButtonX.classList.add('close-x');
+      closeButtonX.classList.add('toggle-x');
+      closeButtonX.addEventListener('click', function() {
+        toggleButtonCounter = 0;
+        openTask.remove();
+        rebuildArrays();
+      })
+
+      const awesomeIconX = document.createElement('i');
+      awesomeIconX.classList.add('far');
+      awesomeIconX.classList.add('fa-times-circle');
+      awesomeIconX.classList.add('fa-2x');
+
       const openTaskText = document.createElement('span');
       openTaskText.classList.add('add-item');
       openTaskText.classList.add('first-style');
@@ -259,6 +284,8 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
           })
         }
       })
+
+      // create choice to priority select menu
       tooglePriority.addEventListener('click', function(e) {
 
         if (toggleButtonCounter !== 0) {
@@ -355,6 +382,8 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       })
 
       // append new task window to website
+      closeButtonX.append(awesomeIconX);
+      openTask.append(closeButtonX);
       openTask.append(openTaskText);
       priorityStatus.append(priorityStatusText, tooglePriority);
       openTask.append(priorityStatus);
@@ -489,6 +518,28 @@ function showInputBox(column) {
   }
 }
 
+function closeInputBox(column) {
+  const userLabel = document.querySelectorAll('.user-label');
+  const priorityChoice = document.querySelectorAll('.priority-choice');
+  const columnsModal = document.querySelectorAll('.columns-modal');
+  const addItemTextField = document.querySelectorAll('.validate');
+  const awesomeIconX = document.querySelectorAll('.close-x');
+
+  awesomeIconX.forEach((x, index) => {
+    if (index === column) {
+      addItemTextField[column].textContent = "";
+      columnsModal[column].style.display = 'none';
+      showInputBoxCounter = 0;
+      userLabel.forEach((el) => {
+        el.selectedIndex = 0;
+      })
+      priorityChoice.forEach((el) => {
+        el.selectedIndex = 0;
+      })
+    }
+  })
+}
+
 // Hide Item Input Box
 function hideInputBox(column) {
   const columnsModal = document.querySelectorAll('.columns-modal');
@@ -497,6 +548,7 @@ function hideInputBox(column) {
   const saveButton = document.querySelectorAll('.submit-button');
   const addItemTextField = document.querySelectorAll('.validate');
   const validationText = document.querySelectorAll('.valid-text');
+  const awesomeIconX = document.querySelectorAll('.close-x');
 
   saveButton.forEach((el, indexing) => {
     if (indexing === column) {
@@ -516,13 +568,11 @@ function hideInputBox(column) {
           el.selectedIndex = 0;
         })
         addToColumn(column);
-        console.log(`added to: ${column}`)
       } else {
         validationText[column].style.display = 'block';
         setTimeout(function() {
           validationText[column].style.display = 'none';
         }, 3000);
-        console.log(`pełno: ${column}`);
       }
     }
   })
