@@ -48,7 +48,17 @@ function htmlTree() {
 
   const columnAttributeNames = ['backlog', 'progress', 'complete', 'on-hold'];
   const columnNames = ['Backlog', 'In Progress', 'Complete', 'on Hold'];
+  const mainTitle = document.querySelector('.main-title');
+  const site = document.querySelector('body');
 
+  // add site shadow and hide it, for show modal event
+  const fullscreenShadow = document.createElement('div');
+  fullscreenShadow.classList.add('fullscreen');
+  fullscreenShadow.setAttribute("hidden", true);
+
+  site.insertBefore(fullscreenShadow, mainTitle);
+
+  // add four column to drag-container div
   const firstColumn = document.createElement('li');
   firstColumn.classList.add('drag-column');
   firstColumn.classList.add('backlog-column');
@@ -149,7 +159,6 @@ function htmlTree() {
     columnAddButton.append(addButtonBox);
     el.append(columnAddButton);
 
-
     closeButtonX.append(awesomeIconX);
     addModal.append(closeButtonX);
     addModal.append(addItemModal);
@@ -214,6 +223,7 @@ function filterArray(array) {
 function createItemEl(columnEl, column, item, index, label, priorities) {
   let toggleButtonCounter = 0;
   const listColumns = document.querySelectorAll('.drag-item-list');
+  const shadowAfterBoxOpen = document.querySelector('.fullscreen');
 
   // List Item
   const listEl = document.createElement('li');
@@ -224,9 +234,22 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
   listEl.classList.add('drag-item');
   listEl.draggable = true;
   listEl.setAttribute('ondragstart', 'drag(event)');
+
   listEl.addEventListener('click', function() {
     if (showInputBoxCounter === 0) {
       showInputBoxCounter++;
+
+      // add event and show shadow on screen
+      shadowAfterBoxOpen.removeAttribute("hidden");
+      shadowAfterBoxOpen.onclick = function(e) {
+        if (e.target) {
+          toggleButtonCounter = 0;
+          openTask.remove();
+          shadowAfterBoxOpen.setAttribute("hidden", true);
+          rebuildArrays();
+        }
+      }
+
       // list item window
       const openTask = document.createElement('div');
       openTask.classList.add('modal');
@@ -238,6 +261,7 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       closeButtonX.addEventListener('click', function() {
         toggleButtonCounter = 0;
         openTask.remove();
+        shadowAfterBoxOpen.setAttribute("hidden", true);
         rebuildArrays();
       })
 
@@ -296,7 +320,6 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
         const select = document.createElement('select');
         select.classList.add('priority-choice', 'select-menu');
         editablePriorityWindow.appendChild(select);
-
 
         const columnPriorityChoice = document.querySelectorAll('.priority-choice');
         const unselectable = document.createElement('option');
@@ -363,6 +386,7 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       deleteTaskButton.addEventListener('click', function() {
         listEl.remove();
         openTask.remove();
+        shadowAfterBoxOpen.setAttribute("hidden", true);
         rebuildArrays();
       });
 
@@ -378,6 +402,7 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
           listEl.dataset.prio = "";
         }
         openTask.remove();
+        shadowAfterBoxOpen.setAttribute("hidden", true);
         rebuildArrays();
       })
 
@@ -503,14 +528,39 @@ function addToColumn(column) {
   updateDOM(column);
 }
 
+function resetChoice() {
+  const userLabel = document.querySelectorAll('.user-label');
+  const priorityChoice = document.querySelectorAll('.priority-choice');
+
+  userLabel.forEach((el) => {
+    el.selectedIndex = 0;
+  })
+  priorityChoice.forEach((el) => {
+    el.selectedIndex = 0;
+  })
+}
+
 // Show Add Item Input Box
 function showInputBox(column) {
   if (showInputBoxCounter === 0) {
     const columnsModal = document.querySelectorAll('.columns-modal');
     const validationText = document.querySelectorAll('.valid-text');
+    const addItemTextField = document.querySelectorAll('.validate');
+    const shadowAfterBoxOpen = document.querySelector('.fullscreen');
 
     validationText[column].style.display = 'none';
     columnsModal[column].style.display = 'flex';
+    shadowAfterBoxOpen.removeAttribute("hidden");
+    shadowAfterBoxOpen.onclick = function(e) {
+      if (e.target) {
+        shadowAfterBoxOpen.setAttribute("hidden", true);
+        addItemTextField[column].textContent = "";
+        columnsModal[column].style.display = 'none';
+        showInputBoxCounter = 0;
+        resetChoice();
+      }
+    }
+
     showInputBoxCounter++;
     UserListToTask();
   } else {
@@ -519,23 +569,18 @@ function showInputBox(column) {
 }
 
 function closeInputBox(column) {
-  const userLabel = document.querySelectorAll('.user-label');
-  const priorityChoice = document.querySelectorAll('.priority-choice');
   const columnsModal = document.querySelectorAll('.columns-modal');
   const addItemTextField = document.querySelectorAll('.validate');
   const awesomeIconX = document.querySelectorAll('.close-x');
+  const shadowAfterBoxOpen = document.querySelector('.fullscreen');
 
   awesomeIconX.forEach((x, index) => {
     if (index === column) {
       addItemTextField[column].textContent = "";
       columnsModal[column].style.display = 'none';
+      shadowAfterBoxOpen.setAttribute("hidden", true);
       showInputBoxCounter = 0;
-      userLabel.forEach((el) => {
-        el.selectedIndex = 0;
-      })
-      priorityChoice.forEach((el) => {
-        el.selectedIndex = 0;
-      })
+      resetChoice();
     }
   })
 }
@@ -548,7 +593,7 @@ function hideInputBox(column) {
   const saveButton = document.querySelectorAll('.submit-button');
   const addItemTextField = document.querySelectorAll('.validate');
   const validationText = document.querySelectorAll('.valid-text');
-  const awesomeIconX = document.querySelectorAll('.close-x');
+  const shadowAfterBoxOpen = document.querySelector('.fullscreen');
 
   saveButton.forEach((el, indexing) => {
     if (indexing === column) {
@@ -567,6 +612,7 @@ function hideInputBox(column) {
           }
           el.selectedIndex = 0;
         })
+        shadowAfterBoxOpen.setAttribute("hidden", true);
         addToColumn(column);
       } else {
         validationText[column].style.display = 'block';
