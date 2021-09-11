@@ -44,7 +44,7 @@ let dragging = false;
 let currentColumn;
 
 // lists + all columns for items
-function htmlTree() {
+function htmlTree(columnEl, column, item, index, label, priorities) {
 
   const columnAttributeNames = ['backlog', 'progress', 'complete', 'on-hold'];
   const columnNames = ['Backlog', 'In Progress', 'Complete', 'on Hold'];
@@ -162,7 +162,7 @@ function htmlTree() {
     closeButtonX.append(awesomeIconX);
     addModal.append(closeButtonX);
     addModal.append(addItemModal);
-    validateWindow.append(validateSpan)
+    validateWindow.append(validateSpan);
     addModal.append(validateWindow);
     modalSelectBoxPriority.append(prioritySpan, selectPrio);
     addModal.append(modalSelectBoxPriority);
@@ -219,15 +219,46 @@ function filterArray(array) {
   return filteredArray;
 }
 
+function prioIcon() {
+  const awesomePrioIcon = document.querySelectorAll('.icon');
+
+  awesomePrioIcon.forEach((liPrio) => {
+    if (liPrio.dataset.prio === "Low") {
+      liPrio.classList.add('fab');
+      liPrio.classList.add('fa-gripfire');
+      liPrio.classList.add('fa-2x');
+      liPrio.style.color = 'white';
+    }
+    if (liPrio.dataset.prio === "Mid") {
+      liPrio.classList.add('fab');
+      liPrio.classList.add('fa-gripfire');
+      liPrio.classList.add('fa-2x');
+      liPrio.style.color = 'yellow';
+    }
+    if (liPrio.dataset.prio === "ASAP") {
+      liPrio.classList.add('fab');
+      liPrio.classList.add('fa-gripfire');
+      liPrio.classList.add('fa-2x');
+      liPrio.style.color = 'red';
+    }
+  })
+}
+
 // Create DOM Elements for each list item
 function createItemEl(columnEl, column, item, index, label, priorities) {
   let toggleButtonCounter = 0;
   const listColumns = document.querySelectorAll('.drag-item-list');
   const shadowAfterBoxOpen = document.querySelector('.fullscreen');
-
   // List Item
   const listEl = document.createElement('li');
-  listEl.textContent = item;
+  const liText = document.createElement('p');
+  const liPrio =document.createElement('p');
+
+  liPrio.dataset.prio = priorities;
+  liPrio.classList.add('icon');
+  liText.textContent = item;
+  liText.classList.add('text');
+  liText.setAttribute('ondragstart', 'drag(event)');
   listEl.id = index;
   listEl.dataset.worker = label;
   listEl.dataset.prio = priorities;
@@ -273,8 +304,18 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       const openTaskText = document.createElement('span');
       openTaskText.classList.add('add-item');
       openTaskText.classList.add('first-style');
-      openTaskText.textContent = listEl.textContent;
+      openTaskText.textContent = liText.textContent;
       openTaskText.contentEditable = true;
+
+      //prevent empty text
+      const validateWindow = document.createElement('div');
+      validateWindow.classList.add('valid-window');
+
+
+      const validateSpan = document.createElement('span');
+      validateSpan.classList.add('valid-text');
+      validateSpan.textContent = "Text Field Is Empty!";
+      validateSpan.style.display = 'none';
 
       const actuallyClickedListElement = listColumns[column].children;
       const actuallyId = actuallyClickedListElement[index].id;
@@ -311,7 +352,6 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
 
       // create choice to priority select menu
       tooglePriority.addEventListener('click', function(e) {
-
         if (toggleButtonCounter !== 0) {
           return;
         }
@@ -394,9 +434,17 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       saveChangesButton.classList.add('interract-button');
       saveChangesButton.classList.add('columns-submit');
       saveChangesButton.textContent = 'Save Changes';
-      saveChangesButton.addEventListener('click', function() {
+      saveChangesButton.addEventListener('click', function(e) {
+        if (openTaskText.textContent === "") {
+          validateSpan.style.display = 'block';
+          setTimeout(function() {
+            validateSpan.style.display = 'none';
+          }, 3000);
+          return
+        }
+
         toggleButtonCounter = 0;
-        listEl.textContent = openTaskText.textContent;
+        liText.textContent = openTaskText.textContent;
         listEl.dataset.prio = tooglePriority.textContent;
         if (listEl.dataset.prio === "Priority is not set") {
           listEl.dataset.prio = "";
@@ -410,6 +458,8 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       closeButtonX.append(awesomeIconX);
       openTask.append(closeButtonX);
       openTask.append(openTaskText);
+      validateWindow.append(validateSpan);
+      openTask.append(validateWindow);
       priorityStatus.append(priorityStatusText, tooglePriority);
       openTask.append(priorityStatus);
       openTask.append(editablePriorityWindow);
@@ -423,7 +473,10 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
     }
   })
   // Append
+  listEl.append(liText);
+  listEl.append(liPrio);
   columnEl.appendChild(listEl);
+  prioIcon();
 }
 
 // Update Columns in DOM - Reset HTML, Filter Array, Update localStorage
@@ -633,19 +686,19 @@ function rebuildArrays() {
 
   backlogListArray = [];
   for (let i = 0; i < backlogListEl.children.length; i++) {
-    backlogListArray.push(backlogListEl.children[i].textContent);
+    backlogListArray.push(backlogListEl.children[i].firstElementChild.textContent);
   }
   progressListArray = [];
   for (let i = 0; i < progressListEl.children.length; i++) {
-    progressListArray.push(progressListEl.children[i].textContent);
+    progressListArray.push(progressListEl.children[i].firstElementChild.textContent);
   }
   completeListArray = [];
   for (let i = 0; i < completeListEl.children.length; i++) {
-    completeListArray.push(completeListEl.children[i].textContent);
+    completeListArray.push(completeListEl.children[i].firstElementChild.textContent);
   }
   onHoldListArray = [];
   for (let i = 0; i < onHoldListEl.children.length; i++) {
-    onHoldListArray.push(onHoldListEl.children[i].textContent);
+    onHoldListArray.push(onHoldListEl.children[i].firstElementChild.textContent);
   }
 
   backlogLabels = [];

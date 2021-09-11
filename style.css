@@ -153,6 +153,11 @@ body {
   transition: 3s;
 }
 
+.toggle-modal .valid-text {
+  color: red;
+  transition: 3s;
+}
+
 .columns-submit {
   background-color: var(--add-content-to-column-button);
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
@@ -271,7 +276,7 @@ ul {
 
 .drag-item {
   margin: 10px;
-  padding: 10px;
+  padding: 5px;
   height: fit-content;
   background-color: var(--list-style);
   border-radius: 10px;
@@ -281,7 +286,15 @@ ul {
   overflow-wrap: break-word;
   word-break: break-word;
   transition: all 0.3s ease-in;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
+
+.drag-item p {
+  margin: 0 10px 0 5px;
+}
+
 
 .drag-item:focus {
   outline: none;
