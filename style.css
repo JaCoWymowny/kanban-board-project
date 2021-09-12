@@ -682,7 +682,7 @@ ul {
   }
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-height: 400px) {
 
   .main-title {
     height: 65px;
@@ -691,7 +691,6 @@ ul {
   .add-item {
     min-height: 40px;
     font-size: 12px;
-    margin-top: 50px;
   }
 
   .temporary-color {
