@@ -45,11 +45,11 @@ body {
 .modal {
   position: fixed;
   z-index: 1000;
-  width: 40%;
-  height: 50%;
+  width: 35%;
+  height: 60%;
   background-color: var(--modal-color-first);
   top: 20%;
-  right: 30%;
+  right: 37%;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
@@ -80,6 +80,15 @@ body {
 
 .choice-priority:hover {
   font-weight: bolder;
+}
+
+.editable-priority-box {
+  height: 35px;
+}
+
+.column-select {
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .select-menu {
@@ -122,7 +131,7 @@ body {
 }
 
 .close-x {
-  width: 27px;
+  width: 24px;
   height: 26px;
   border-style: none;
   background-color: var(--modal-color-first);
@@ -363,11 +372,11 @@ ul {
 
 .add-item {
   width: 80%;
-  min-height: 200px;
+  min-height: 165px;
   height: auto;
   background-color: white;
   border-radius: 10px;
-  margin: 5px auto;
+  margin: 30px auto 5px auto;
   resize: none;
   color: black;
   padding: 10px;
@@ -390,6 +399,7 @@ ul {
 }
 
 .add-btn-backlog {
+  content: "Add new task !";
   width: 20%;
   height: 5%;
   align-self: center;
@@ -408,13 +418,13 @@ ul {
   cursor: pointer;
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
   transition: all 0.3s ease-in;
-
 }
 
 .button-container {
   display: flex;
   justify-content: space-around;
   width: 100%;
+  margin-bottom: 15px;
 }
 
 .interract-button {
@@ -499,13 +509,6 @@ ul {
     text-align: center;
   }
 
-  .circle {
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    background-color: var(--additional-color);
-  }
-
   .add-btn span {
     font-size: 20px;
   }
@@ -554,7 +557,7 @@ ul {
   }
 
   .editable-priority-box {
-    height: 30px;
+    height: 20px;
     margin: 10px;
   }
 
@@ -578,6 +581,7 @@ ul {
   .main-title {
     font-size: 25px;
     padding-left: 10px;
+    margin-left: 30px;
   }
 
   .drag-container {
@@ -611,27 +615,7 @@ ul {
     z-index: 100;
     padding: 10px 10px 10px 10px;
     text-align: center;
-  }
-
-  .circle {
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    background-color: var(--additional-color);
-  }
-
-  .circle::before {
-    content: "+";
-    height:40px;
-    width:40px;
-    font-size:80px;
-    display:flex;
-    flex-direction:row;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-    color:white;
-    margin-bottom: 7px;
+    font-size: 15px;
   }
 
   .add-btn span {

@@ -1,5 +1,4 @@
 const dragList = document.querySelector('.drag-list');
-const separatedButton = document.querySelector('.add-btn-backlog');
 
 // Items
 let updatedOnLoad = false;
@@ -45,12 +44,13 @@ let dragging = false;
 let currentColumn;
 
 // lists + all columns for items
-function htmlTree(columnEl, column, item, index, label, priorities) {
+function htmlTree() {
 
   const columnAttributeNames = ['backlog', 'progress', 'complete', 'on-hold'];
   const columnNames = ['Backlog', 'In Progress', 'Complete', 'on Hold'];
   const mainTitle = document.querySelector('.main-title');
   const site = document.querySelector('body');
+  const scripts = document.querySelectorAll('script');
 
   // add site shadow and hide it, for show modal event
   const fullscreenShadow = document.createElement('div');
@@ -173,16 +173,6 @@ function htmlTree(columnEl, column, item, index, label, priorities) {
     addModal.append(siteButton);
     el.append(addModal);
   })
-}
-
-function mobileSign() {
-  if (window.innerWidth < 1025) {
-    separatedButton.classList.add('circle');
-    separatedButton.textContent = "";
-  } if (window.innerWidth > 1024) {
-    separatedButton.classList.remove('circle');
-    separatedButton.textContent = "Add new task !";
-  }
 }
 
 // Get Arrays from localStorage if available, without default value
@@ -786,6 +776,7 @@ function drop(e) {
 }
 
 // On Load
-mobileSign();
 htmlTree();
 updateDOM();
+test();
+
