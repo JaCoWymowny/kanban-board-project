@@ -36,7 +36,7 @@ body {
   content: "";
   position: absolute;
   width: 100%;
-  height: 100vh;
+  height: 150%;
   background: rgba(0,0,0,0.4);
   z-index: 1000;
   top: 0;
@@ -439,20 +439,22 @@ ul {
 }
 
 /* Media Query: Laptop */
-@media screen and (max-width: 1800px) {
+@media screen and (max-width: 1024px) {
   .main-title {
     font-size: 2rem;
   }
-}
 
-/* Media Query: Large Smartphone (Vertical) */
-@media screen and (max-width: 768px) {
   body {
     overflow-y: auto;
   }
 
+  .main-title {
+    font-size: 25px;
+    padding-left: 10px;
+  }
+
   .drag-container {
-    margin: 0;
+    margin: 100px 0 100px 0;
   }
 
   .drag-list {
@@ -471,7 +473,7 @@ ul {
     position: fixed;
     top: 0;
     width: 100%;
-    z-index: 1000;
+    z-index: 100;
     background-color: white;
     height: 80px;
     display: flex;
@@ -480,25 +482,28 @@ ul {
     margin-top: 0;
   }
 
-  .drag-container {
-    margin-top: 100px;
-    margin-bottom: 100px;
-  }
-
   .drag-list {
     width: 80%;
   }
 
   .add-btn-group {
-    justify-content: center;
+    font-size: 15px;
   }
 
   .add-btn-backlog {
     position: fixed;
-    margin: 11px;
-    top: 0;
-    left: 0;
-    z-index: 1000;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+    padding: 10px 10px 10px 10px;
+    text-align: center;
+  }
+
+  .circle {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    background-color: var(--additional-color);
   }
 
   .add-btn span {
@@ -506,8 +511,188 @@ ul {
   }
 
   .modal {
-    width: 70%;
+    width: 60%;
     top: 25%;
-    right: 15%;
+    right: 18%;
+    height: 60%;
+  }
+
+  .add-item {
+    min-height: 180px;
+    margin-top: 30px;
+  }
+
+  .close-x {
+    width: 22px;
+    height: 19px;
+  }
+
+  .select-box {
+    margin-bottom: 15px;
+  }
+
+  .select-box span {
+    font-size: 15px;
+  }
+
+  .select-menu {
+    width: 140px;
+  }
+
+  .submit-button {
+    font-size: 10px;
+  }
+
+  .column-select {
+    display: flex;
+    justify-content: space-around;
+    width: 70%;
+  }
+
+  .choice-priority {
+    margin-right: 30px;
+  }
+
+  .editable-priority-box {
+    height: 30px;
+    margin: 10px;
+  }
+
+
+  .button-container {
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+
+  .interract-button {
+    width: 125px;
+  }
+}
+
+/* Media Query: Large Smartphone (Vertical) */
+@media screen and (max-width: 768px) {
+  body {
+    overflow-y: auto;
+  }
+
+  .main-title {
+    font-size: 25px;
+    padding-left: 10px;
+  }
+
+  .drag-container {
+    margin: 100px 0 100px 0;
+  }
+
+  .drag-list {
+    display: block;
+  }
+
+  .drag-column {
+    margin: 10px;
+  }
+
+  .drag-item {
+    text-align: center;
+  }
+
+  .drag-list {
+    width: 80%;
+  }
+
+  .add-btn-group {
+    font-size: 15px;
+  }
+
+  .add-btn-backlog {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+    padding: 10px 10px 10px 10px;
+    text-align: center;
+  }
+
+  .circle {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    background-color: var(--additional-color);
+  }
+
+  .circle::before {
+    content: "+";
+    height:40px;
+    width:40px;
+    font-size:80px;
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    color:white;
+    margin-bottom: 7px;
+  }
+
+  .add-btn span {
+    font-size: 20px;
+  }
+
+  .modal {
+    width: 80%;
+    top: 25%;
+    right: 10%;
+    height: 60%;
+  }
+
+  .add-item {
+    min-height: 180px;
+    margin-top: 30px;
+  }
+
+  .close-x {
+    width: 22px;
+    height: 19px;
+  }
+
+  .select-box {
+    margin-bottom: 15px;
+  }
+
+  .select-box span {
+    font-size: 15px;
+  }
+
+  .select-menu {
+    width: 140px;
+  }
+
+  .submit-button {
+    font-size: 10px;
+  }
+
+  .column-select {
+    display: flex;
+    justify-content: space-between;
+    width: 70%;
+  }
+
+  .choice-priority {
+    margin-right: 30px;
+  }
+
+  .editable-priority-box {
+    height: 30px;
+    margin: 10px;
+  }
+
+
+  .button-container {
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+
+  .interract-button {
+    width: 125px;
   }
 }

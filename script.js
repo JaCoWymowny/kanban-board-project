@@ -1,4 +1,5 @@
 const dragList = document.querySelector('.drag-list');
+const separatedButton = document.querySelector('.add-btn-backlog');
 
 // Items
 let updatedOnLoad = false;
@@ -149,7 +150,7 @@ function htmlTree(columnEl, column, item, index, label, priorities) {
     siteButton.classList.add('columns-submit');
     siteButton.classList.add('submit-button');
     siteButton.setAttribute('onclick', `hideInputBox(${index})`);
-    siteButton.textContent = 'Save this task !';
+    siteButton.textContent = 'Save task !';
 
     spanHeader.append(header);
     el.append(spanHeader);
@@ -172,6 +173,16 @@ function htmlTree(columnEl, column, item, index, label, priorities) {
     addModal.append(siteButton);
     el.append(addModal);
   })
+}
+
+function mobileSign() {
+  if (window.innerWidth < 1025) {
+    separatedButton.classList.add('circle');
+    separatedButton.textContent = "";
+  } if (window.innerWidth > 1024) {
+    separatedButton.classList.remove('circle');
+    separatedButton.textContent = "Add new task !";
+  }
 }
 
 // Get Arrays from localStorage if available, without default value
@@ -311,7 +322,6 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       const validateWindow = document.createElement('div');
       validateWindow.classList.add('valid-window');
 
-
       const validateSpan = document.createElement('span');
       validateSpan.classList.add('valid-text');
       validateSpan.textContent = "Text Field Is Empty!";
@@ -321,8 +331,10 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       const actuallyId = actuallyClickedListElement[index].id;
 
       const editablePriorityWindow = document.createElement('div');
+      editablePriorityWindow.classList.add('editable-priority-box')
 
       const priorityStatus = document.createElement('div');
+      priorityStatus.classList.add('column-select')
       const priorityStatusText = document.createElement('span');
       priorityStatusText.textContent = 'Priority: ';
       priorityStatusText.classList.add('temporary-color');
@@ -398,6 +410,7 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       })
 
       const responsibleUserBox = document.createElement('div');
+      responsibleUserBox.classList.add('column-select')
       const responsibleUserValue = document.createElement('span');
       responsibleUserValue.classList.add('temporary-color');
       responsibleUserValue.textContent = 'Label: ';
@@ -773,5 +786,6 @@ function drop(e) {
 }
 
 // On Load
+mobileSign();
 htmlTree();
 updateDOM();
