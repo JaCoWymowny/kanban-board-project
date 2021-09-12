@@ -690,6 +690,7 @@ ul {
 
   .add-item {
     min-height: 40px;
+    max-height: 55px;
     font-size: 12px;
   }
 
