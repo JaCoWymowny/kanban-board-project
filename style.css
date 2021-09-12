@@ -653,6 +653,7 @@ ul {
 
   .submit-button {
     font-size: 10px;
+    margin-bottom: 15px;
   }
 
   .column-select {
@@ -678,5 +679,68 @@ ul {
 
   .interract-button {
     width: 125px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+
+  .main-title {
+    height: 65px;
+  }
+
+  .add-item {
+    min-height: 40px;
+    font-size: 12px;
+    margin-top: 50px;
+  }
+
+  .temporary-color {
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .choice-priority {
+    font-size: 12px;
+    margin-right: 20px;
+  }
+
+  .valid-window {
+    height: 15px;
+  }
+
+  .columns-modal span {
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .column-select {
+    width: 50%;
+  }
+
+  .select-box {
+    margin-bottom: 7px;
+  }
+
+  .submit-button {
+    margin-bottom: 5px;
+  }
+
+  .select-menu {
+    height: 16px;
+    font-size: 12px;
+  }
+
+  .editable-priority-box {
+    margin: 0;
+  }
+
+  .button-container {
+    margin-top: 7px;
+  }
+
+  .interract-button {
+    width: 90px;
+    font-size: 12px;
+    height: 20px;
   }
 }

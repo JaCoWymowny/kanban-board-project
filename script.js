@@ -778,5 +778,4 @@ function drop(e) {
 // On Load
 htmlTree();
 updateDOM();
-test();
 
