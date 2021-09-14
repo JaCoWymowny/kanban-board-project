@@ -563,6 +563,12 @@ function UserListToTask() {
   })
 }
 
+let test = {};
+
+function addToObject() {
+
+}
+
 // Add to Column List, Reset Textbox
 function addToColumn(column) {
   const addItems = document.querySelectorAll('.add-item');
