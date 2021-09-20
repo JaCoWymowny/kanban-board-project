@@ -25,6 +25,12 @@ let completePrio = [];
 let onHoldPrio = [];
 let listPrio = [];
 
+let testColumn1 = [];
+let testColumn2 = [];
+let testColumn3 = [];
+let testColumn4 = [];
+let testList = [];
+
 let labels = [
   {name: ""},
   {name: 'Front-end'},
@@ -192,6 +198,11 @@ function getSavedColumns() {
     progressPrio = JSON.parse(localStorage.secondPrio);
     completePrio = JSON.parse(localStorage.thirdPrio);
     onHoldPrio = JSON.parse(localStorage.lastPrio);
+  } if (localStorage.getItem('test1')) {
+    testColumn1 = JSON.parse(localStorage.test1);
+    testColumn2 = JSON.parse(localStorage.test2);
+    testColumn3 = JSON.parse(localStorage.test3);
+    testColumn4 = JSON.parse(localStorage.test4);
   }
 }
 
@@ -211,7 +222,12 @@ function updateSavedColumns() {
   const prioNames = ['first', 'second', 'third', 'last'];
   prioNames.forEach((prioName, index) => {
     localStorage.setItem(`${prioName}Prio`, JSON.stringify(listPrio[index]));
-  })
+  });
+  testList = [testColumn1, testColumn2, testColumn3, testColumn4];
+  const testNames = ['1', '2', '3', '4'];
+  testNames.forEach((testName, index) => {
+    localStorage.setItem(`test${testName}`, JSON.stringify(testList[index]));
+  });
 }
 
 // Filter Array to remove empty values
@@ -404,14 +420,14 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       const responsibleUserValue = document.createElement('span');
       responsibleUserValue.classList.add('temporary-color');
       responsibleUserValue.textContent = 'Label: ';
-      const responsibleObjectTest = document.createElement('span');
-      responsibleObjectTest.classList.add('choice-user');
-      responsibleObjectTest.classList.add('temporary-color');
+      const responsibleObjectChoice = document.createElement('span');
+      responsibleObjectChoice.classList.add('choice-user');
+      responsibleObjectChoice.classList.add('temporary-color');
       listLabels.forEach((el, index) => {
         if (index === column) {
           el.forEach((listElement, index) => {
             if (parseInt(actuallyId) === index) {
-              responsibleObjectTest.textContent = listElement;
+              responsibleObjectChoice.textContent = listElement;
             }
           })
         }
@@ -466,7 +482,7 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       priorityStatus.append(priorityStatusText, tooglePriority);
       openTask.append(priorityStatus);
       openTask.append(editablePriorityWindow);
-      responsibleUserBox.append(responsibleUserValue, responsibleObjectTest);
+      responsibleUserBox.append(responsibleUserValue, responsibleObjectChoice);
       openTask.append(responsibleUserBox);
       boxForButtons.append(deleteTaskButton, saveChangesButton);
       openTask.append(boxForButtons);
@@ -563,15 +579,16 @@ function UserListToTask() {
   })
 }
 
-let test = {};
-
-function addToObject() {
-
-}
+let test = {
+  description: "0",
+  priority: "1",
+  label: "2"
+};
 
 // Add to Column List, Reset Textbox
 function addToColumn(column) {
   const addItems = document.querySelectorAll('.add-item');
+
   const itemText = addItems[column].textContent;
   const selectedArray = listArrays[column];
 
@@ -581,13 +598,17 @@ function addToColumn(column) {
   const prioText = choosenPriority;
   const selectedPriority = listPrio[column];
 
+  test.description = addItems[column].textContent;
+  const selectedTestList = testList[column];
+
   selectedArray.push(itemText);
   selectedLabels.push(labelText);
   selectedPriority.push(prioText);
+  selectedTestList.push(test);
 
   addItems[column].textContent = '';
-
   updateDOM(column);
+  test ={};
 }
 
 function resetChoice() {
@@ -664,6 +685,7 @@ function hideInputBox(column) {
         userLabel.forEach((el, index) => {
           if (index === column) {
             choosenWorker = el.options[el.selectedIndex].text;
+            test.label = el.options[el.selectedIndex].text;
           }
           el.selectedIndex = 0;
         })
@@ -671,6 +693,7 @@ function hideInputBox(column) {
         priorityChoice.forEach((el, index) => {
           if (index === column) {
             choosenPriority = el.options[el.selectedIndex].text;
+            test.priority = el.options[el.selectedIndex].text;
           }
           el.selectedIndex = 0;
         })
