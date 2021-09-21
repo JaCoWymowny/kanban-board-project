@@ -7,23 +7,23 @@ let choosenPriority = "";
 let showInputBoxCounter = 0;
 
 // Initialize Arrays
-let backlogListArray = [];
-let progressListArray = [];
-let completeListArray = [];
-let onHoldListArray = [];
-let listArrays = [];
-
-let backlogLabels = [];
-let progressLabels = [];
-let completeLabels = [];
-let onHoldLabels = [];
-let listLabels = [];
-
-let backlogPrio = [];
-let progressPrio = [];
-let completePrio = [];
-let onHoldPrio = [];
-let listPrio = [];
+// let backlogListArray = [];
+// let progressListArray = [];
+// let completeListArray = [];
+// let onHoldListArray = [];
+// let listArrays = [];
+//
+// let backlogLabels = [];
+// let progressLabels = [];
+// let completeLabels = [];
+// let onHoldLabels = [];
+// let listLabels = [];
+//
+// let backlogPrio = [];
+// let progressPrio = [];
+// let completePrio = [];
+// let onHoldPrio = [];
+// let listPrio = [];
 
 let testColumn1 = [];
 let testColumn2 = [];
@@ -183,22 +183,23 @@ function htmlTree() {
 
 // Get Arrays from localStorage if available, without default value
 function getSavedColumns() {
-  if (localStorage.getItem('backlogItems')) {
-    backlogListArray = JSON.parse(localStorage.backlogItems);
-    progressListArray = JSON.parse(localStorage.progressItems);
-    completeListArray = JSON.parse(localStorage.completeItems);
-    onHoldListArray = JSON.parse(localStorage.onHoldItems);
-  } if (localStorage.getItem('firstLabels')) {
-    backlogLabels = JSON.parse(localStorage.firstLabels);
-    progressLabels = JSON.parse(localStorage.secondLabels);
-    completeLabels = JSON.parse(localStorage.thirdLabels);
-    onHoldLabels = JSON.parse(localStorage.lastLabels);
-  } if (localStorage.getItem('firstPrio')) {
-    backlogPrio = JSON.parse(localStorage.firstPrio);
-    progressPrio = JSON.parse(localStorage.secondPrio);
-    completePrio = JSON.parse(localStorage.thirdPrio);
-    onHoldPrio = JSON.parse(localStorage.lastPrio);
-  } if (localStorage.getItem('test1')) {
+  // if (localStorage.getItem('backlogItems')) {
+  //   backlogListArray = JSON.parse(localStorage.backlogItems);
+  //   progressListArray = JSON.parse(localStorage.progressItems);
+  //   completeListArray = JSON.parse(localStorage.completeItems);
+  //   onHoldListArray = JSON.parse(localStorage.onHoldItems);
+  // } if (localStorage.getItem('firstLabels')) {
+  //   backlogLabels = JSON.parse(localStorage.firstLabels);
+  //   progressLabels = JSON.parse(localStorage.secondLabels);
+  //   completeLabels = JSON.parse(localStorage.thirdLabels);
+  //   onHoldLabels = JSON.parse(localStorage.lastLabels);
+  // } if (localStorage.getItem('firstPrio')) {
+  //   backlogPrio = JSON.parse(localStorage.firstPrio);
+  //   progressPrio = JSON.parse(localStorage.secondPrio);
+  //   completePrio = JSON.parse(localStorage.thirdPrio);
+  //   onHoldPrio = JSON.parse(localStorage.lastPrio);
+  // }
+  if (localStorage.getItem('test1')) {
     testColumn1 = JSON.parse(localStorage.test1);
     testColumn2 = JSON.parse(localStorage.test2);
     testColumn3 = JSON.parse(localStorage.test3);
@@ -208,21 +209,21 @@ function getSavedColumns() {
 
 // Set localStorage Arrays
 function updateSavedColumns() {
-  listArrays = [backlogListArray, progressListArray, completeListArray, onHoldListArray];
-  const arrayNames = ['backlog', 'progress', 'complete', 'onHold'];
-  arrayNames.forEach((arrayName, index) => {
-    localStorage.setItem(`${arrayName}Items`, JSON.stringify(listArrays[index]));
-  });
-  listLabels = [backlogLabels, progressLabels, completeLabels, onHoldLabels];
-  const labelNames = ['first', 'second', 'third', 'last'];
-  labelNames.forEach((labelName, index) => {
-    localStorage.setItem(`${labelName}Labels`, JSON.stringify(listLabels[index]));
-  });
-  listPrio = [backlogPrio, progressPrio, completePrio, onHoldPrio];
-  const prioNames = ['first', 'second', 'third', 'last'];
-  prioNames.forEach((prioName, index) => {
-    localStorage.setItem(`${prioName}Prio`, JSON.stringify(listPrio[index]));
-  });
+  // listArrays = [backlogListArray, progressListArray, completeListArray, onHoldListArray];
+  // const arrayNames = ['backlog', 'progress', 'complete', 'onHold'];
+  // arrayNames.forEach((arrayName, index) => {
+  //   localStorage.setItem(`${arrayName}Items`, JSON.stringify(listArrays[index]));
+  // });
+  // listLabels = [backlogLabels, progressLabels, completeLabels, onHoldLabels];
+  // const labelNames = ['first', 'second', 'third', 'last'];
+  // labelNames.forEach((labelName, index) => {
+  //   localStorage.setItem(`${labelName}Labels`, JSON.stringify(listLabels[index]));
+  // });
+  // listPrio = [backlogPrio, progressPrio, completePrio, onHoldPrio];
+  // const prioNames = ['first', 'second', 'third', 'last'];
+  // prioNames.forEach((prioName, index) => {
+  //   localStorage.setItem(`${prioName}Prio`, JSON.stringify(listPrio[index]));
+  // });
   testList = [testColumn1, testColumn2, testColumn3, testColumn4];
   const testNames = ['1', '2', '3', '4'];
   testNames.forEach((testName, index) => {
@@ -346,12 +347,12 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       priorityStatusText.classList.add('temporary-color');
       const tooglePriority = document.createElement('span');
       tooglePriority.classList.add('choice-priority');
-      listPrio.forEach((el, index) => {
+      testList.forEach((el, index) => {
         if (index === column) {
           el.forEach((listElement, index) => {
             if (parseInt(actuallyId) === index) {
-              tooglePriority.textContent = listElement;
-              if (listElement === "") {
+              tooglePriority.textContent = listElement.priority;
+              if (listElement.priority === "") {
                 tooglePriority.textContent = "Open priority window";
               }
               if (tooglePriority.textContent === "Low") {
@@ -423,11 +424,11 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       const responsibleObjectChoice = document.createElement('span');
       responsibleObjectChoice.classList.add('choice-user');
       responsibleObjectChoice.classList.add('temporary-color');
-      listLabels.forEach((el, index) => {
+      testList.forEach((el, index) => {
         if (index === column) {
           el.forEach((listElement, index) => {
             if (parseInt(actuallyId) === index) {
-              responsibleObjectChoice.textContent = listElement;
+              responsibleObjectChoice.textContent = listElement.label;
             }
           })
         }
@@ -512,28 +513,28 @@ function updateDOM() {
   }
   // Backlog Column
   backlogListEl.textContent = '';
-  backlogListArray.forEach((backlogItem, index) => {
-      createItemEl(backlogListEl, 0, backlogItem, index, backlogLabels[index], backlogPrio[index]);
+  testColumn1.forEach((backlogItem, index) => {
+      createItemEl(backlogListEl, 0, backlogItem.description, index, backlogItem.label, backlogItem.priority);
   });
-  backlogListArray = filterArray(backlogListArray);
+  testColumn1 = filterArray(testColumn1);
   // Progress Column
   progressListEl.textContent = '';
-  progressListArray.forEach((progressItem, index) => {
-    createItemEl(progressListEl, 1, progressItem, index, progressLabels[index], progressPrio[index]);
+  testColumn2.forEach((progressItem, index) => {
+    createItemEl(progressListEl, 1, progressItem.description, index, progressItem.label, progressItem.priority);
   });
-  progressListArray = filterArray(progressListArray);
+  testColumn2 = filterArray(testColumn2);
   // Complete Column
   completeListEl.textContent = '';
-  completeListArray.forEach((completeItem, index) => {
-    createItemEl(completeListEl, 2, completeItem, index, completeLabels[index], completePrio[index]);
+  testColumn3.forEach((completeItem, index) => {
+    createItemEl(completeListEl, 2, completeItem.description, index, completeItem.label, completeItem.priority);
   });
-  completeListArray = filterArray(completeListArray);
+  testColumn3 = filterArray(testColumn3);
   // On Hold Column
   onHoldListEl.textContent = '';
-  onHoldListArray.forEach((onHoldItem, index) => {
-    createItemEl(onHoldListEl, 3, onHoldItem, index, onHoldLabels[index], onHoldPrio[index]);
+  testColumn4.forEach((onHoldItem, index) => {
+    createItemEl(onHoldListEl, 3, onHoldItem.description, index, onHoldItem.label, onHoldItem.priority);
   });
-  onHoldListArray = filterArray(onHoldListArray);
+  testColumn4 = filterArray(testColumn4);
   // Don't run more than once, Update Local Storage
   updatedOnLoad = true;
   updateSavedColumns();
@@ -589,21 +590,21 @@ let test = {
 function addToColumn(column) {
   const addItems = document.querySelectorAll('.add-item');
 
-  const itemText = addItems[column].textContent;
-  const selectedArray = listArrays[column];
-
-  const labelText = choosenWorker;
-  const selectedLabels = listLabels[column];
-
-  const prioText = choosenPriority;
-  const selectedPriority = listPrio[column];
+  // const itemText = addItems[column].textContent;
+  // const selectedArray = listArrays[column];
+  //
+  // const labelText = test.label;
+  // const selectedLabels = listLabels[column];
+  //
+  // const prioText = test.priority;
+  // const selectedPriority = listPrio[column];
 
   test.description = addItems[column].textContent;
   const selectedTestList = testList[column];
 
-  selectedArray.push(itemText);
-  selectedLabels.push(labelText);
-  selectedPriority.push(prioText);
+  // selectedArray.push(itemText);
+  // selectedLabels.push(labelText);
+  // selectedPriority.push(prioText);
   selectedTestList.push(test);
 
   addItems[column].textContent = '';
@@ -684,7 +685,7 @@ function hideInputBox(column) {
         columnsModal[column].style.display = 'none';
         userLabel.forEach((el, index) => {
           if (index === column) {
-            choosenWorker = el.options[el.selectedIndex].text;
+            // choosenWorker = el.options[el.selectedIndex].text;
             test.label = el.options[el.selectedIndex].text;
           }
           el.selectedIndex = 0;
@@ -692,7 +693,7 @@ function hideInputBox(column) {
 
         priorityChoice.forEach((el, index) => {
           if (index === column) {
-            choosenPriority = el.options[el.selectedIndex].text;
+            // choosenPriority = el.options[el.selectedIndex].text;
             test.priority = el.options[el.selectedIndex].text;
           }
           el.selectedIndex = 0;
@@ -716,56 +717,89 @@ function rebuildArrays() {
   const completeListEl = document.getElementById('complete-list');
   const onHoldListEl = document.getElementById('on-hold-list');
 
-  backlogListArray = [];
+  testColumn1 = [];
   for (let i = 0; i < backlogListEl.children.length; i++) {
-    backlogListArray.push(backlogListEl.children[i].firstElementChild.textContent);
+    test.description = backlogListEl.children[i].firstElementChild.textContent;
+    test.label = backlogListEl.children[i].dataset.worker;
+    test.priority = backlogListEl.children[i].dataset.prio;
+    testColumn1.push(test);
+    test = {};
   }
-  progressListArray = [];
+  testColumn2 = [];
   for (let i = 0; i < progressListEl.children.length; i++) {
-    progressListArray.push(progressListEl.children[i].firstElementChild.textContent);
+    test.description = progressListEl.children[i].firstElementChild.textContent;
+    test.label = progressListEl.children[i].dataset.worker;
+    test.priority = progressListEl.children[i].dataset.prio;
+    testColumn2.push(test);
+    test = {};
   }
-  completeListArray = [];
+  testColumn3 = [];
   for (let i = 0; i < completeListEl.children.length; i++) {
-    completeListArray.push(completeListEl.children[i].firstElementChild.textContent);
+    test.description = completeListEl.children[i].firstElementChild.textContent;
+    test.label = completeListEl.children[i].dataset.worker;
+    test.priority = completeListEl.children[i].dataset.prio;
+    testColumn3.push(test);
+    test = {};
   }
-  onHoldListArray = [];
+  testColumn4 = [];
   for (let i = 0; i < onHoldListEl.children.length; i++) {
-    onHoldListArray.push(onHoldListEl.children[i].firstElementChild.textContent);
+    test.description = onHoldListEl.children[i].firstElementChild.textContent;
+    test.label = onHoldListEl.children[i].dataset.worker;
+    test.priority = onHoldListEl.children[i].dataset.prio;
+    testColumn4.push(test);
+    test = {};
   }
 
-  backlogLabels = [];
-  for (let i = 0; i < backlogListEl.children.length; i++) {
-    backlogLabels.push(backlogListEl.children[i].dataset.worker);
-  }
-  progressLabels = [];
-  for (let i = 0; i < progressListEl.children.length; i++) {
-    progressLabels.push(progressListEl.children[i].dataset.worker);
-  }
-  completeLabels = [];
-  for (let i = 0; i < completeListEl.children.length; i++) {
-    completeLabels.push(completeListEl.children[i].dataset.worker);
-  }
-  onHoldLabels = [];
-  for (let i = 0; i < onHoldListEl.children.length; i++) {
-    onHoldLabels.push(onHoldListEl.children[i].dataset.worker);
-  }
-
-  backlogPrio = [];
-  for (let i = 0; i < backlogListEl.children.length; i++) {
-    backlogPrio.push(backlogListEl.children[i].dataset.prio);
-  }
-  progressPrio = [];
-  for (let i = 0; i < progressListEl.children.length; i++) {
-    progressPrio.push(progressListEl.children[i].dataset.prio);
-  }
-  completePrio = [];
-  for (let i = 0; i < completeListEl.children.length; i++) {
-    completePrio.push(completeListEl.children[i].dataset.prio);
-  }
-  onHoldPrio = [];
-  for (let i = 0; i < onHoldListEl.children.length; i++) {
-    onHoldPrio.push(onHoldListEl.children[i].dataset.prio);
-  }
+  // backlogListArray = [];
+  // for (let i = 0; i < backlogListEl.children.length; i++) {
+  //   backlogListArray.push(backlogListEl.children[i].firstElementChild.textContent);
+  // }
+  // progressListArray = [];
+  // for (let i = 0; i < progressListEl.children.length; i++) {
+  //   progressListArray.push(progressListEl.children[i].firstElementChild.textContent);
+  // }
+  // completeListArray = [];
+  // for (let i = 0; i < completeListEl.children.length; i++) {
+  //   completeListArray.push(completeListEl.children[i].firstElementChild.textContent);
+  // }
+  // onHoldListArray = [];
+  // for (let i = 0; i < onHoldListEl.children.length; i++) {
+  //   onHoldListArray.push(onHoldListEl.children[i].firstElementChild.textContent);
+  // }
+  //
+  // backlogLabels = [];
+  // for (let i = 0; i < backlogListEl.children.length; i++) {
+  //   backlogLabels.push(backlogListEl.children[i].dataset.worker);
+  // }
+  // progressLabels = [];
+  // for (let i = 0; i < progressListEl.children.length; i++) {
+  //   progressLabels.push(progressListEl.children[i].dataset.worker);
+  // }
+  // completeLabels = [];
+  // for (let i = 0; i < completeListEl.children.length; i++) {
+  //   completeLabels.push(completeListEl.children[i].dataset.worker);
+  // }
+  // onHoldLabels = [];
+  // for (let i = 0; i < onHoldListEl.children.length; i++) {
+  //   onHoldLabels.push(onHoldListEl.children[i].dataset.worker);
+  // }
+  //
+  // backlogPrio = [];
+  // for (let i = 0; i < backlogListEl.children.length; i++) {
+  //   backlogPrio.push(backlogListEl.children[i].dataset.prio);
+  // }
+  // progressPrio = [];
+  // for (let i = 0; i < progressListEl.children.length; i++) {
+  //   progressPrio.push(progressListEl.children[i].dataset.prio);
+  // }
+  // completePrio = [];
+  // for (let i = 0; i < completeListEl.children.length; i++) {
+  //   completePrio.push(completeListEl.children[i].dataset.prio);
+  // }
+  // onHoldPrio = [];
+  // for (let i = 0; i < onHoldListEl.children.length; i++) {
+  //   onHoldPrio.push(onHoldListEl.children[i].dataset.prio);
+  // }
   updateDOM();
 }
 
