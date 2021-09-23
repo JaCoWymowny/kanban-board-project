@@ -4,11 +4,11 @@ const dragList = document.querySelector('.drag-list');
 let updatedOnLoad = false;
 let showInputBoxCounter = 0;
 
-let testColumn1 = [];
-let testColumn2 = [];
-let testColumn3 = [];
-let testColumn4 = [];
-let testList = [];
+let storageColumn1 = [];
+let storageColumn2 = [];
+let storageColumn3 = [];
+let storageColumn4 = [];
+let storageList = [];
 
 let labels = [
   {name: ""},
@@ -22,6 +22,12 @@ let priority = [
   {name: 'Mid'},
   {name: 'ASAP'}
 ];
+
+let storage = {
+  description: "0",
+  priority: "1",
+  label: "2"
+};
 
 // Drag Functionality
 let draggedItem;
@@ -162,20 +168,20 @@ function htmlTree() {
 
 // Get Arrays from localStorage if available, without default value
 function getSavedColumns() {
-  if (localStorage.getItem('test1')) {
-    testColumn1 = JSON.parse(localStorage.test1);
-    testColumn2 = JSON.parse(localStorage.test2);
-    testColumn3 = JSON.parse(localStorage.test3);
-    testColumn4 = JSON.parse(localStorage.test4);
+  if (localStorage.getItem('storage1')) {
+    storageColumn1 = JSON.parse(localStorage.storage1);
+    storageColumn2 = JSON.parse(localStorage.storage2);
+    storageColumn3 = JSON.parse(localStorage.storage3);
+    storageColumn4 = JSON.parse(localStorage.storage4);
   }
 }
 
 // Set localStorage Arrays
 function updateSavedColumns() {
-  testList = [testColumn1, testColumn2, testColumn3, testColumn4];
-  const testNames = ['1', '2', '3', '4'];
-  testNames.forEach((testName, index) => {
-    localStorage.setItem(`test${testName}`, JSON.stringify(testList[index]));
+  storageList = [storageColumn1, storageColumn2, storageColumn3, storageColumn4];
+  const storageNames = ['1', '2', '3', '4'];
+  storageNames.forEach((storageName, index) => {
+    localStorage.setItem(`storage${storageName}`, JSON.stringify(storageList[index]));
   });
 }
 
@@ -295,7 +301,7 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       priorityStatusText.classList.add('temporary-color');
       const tooglePriority = document.createElement('span');
       tooglePriority.classList.add('choice-priority');
-      testList.forEach((el, index) => {
+      storageList.forEach((el, index) => {
         if (index === column) {
           el.forEach((listElement, index) => {
             if (parseInt(actuallyId) === index) {
@@ -372,7 +378,7 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       const responsibleObjectChoice = document.createElement('span');
       responsibleObjectChoice.classList.add('choice-user');
       responsibleObjectChoice.classList.add('temporary-color');
-      testList.forEach((el, index) => {
+      storageList.forEach((el, index) => {
         if (index === column) {
           el.forEach((listElement, index) => {
             if (parseInt(actuallyId) === index) {
@@ -461,28 +467,28 @@ function updateDOM() {
   }
   // Backlog Column
   backlogListEl.textContent = '';
-  testColumn1.forEach((backlogItem, index) => {
+  storageColumn1.forEach((backlogItem, index) => {
       createItemEl(backlogListEl, 0, backlogItem.description, index, backlogItem.label, backlogItem.priority);
   });
-  testColumn1 = filterArray(testColumn1);
+  storageColumn1 = filterArray(storageColumn1);
   // Progress Column
   progressListEl.textContent = '';
-  testColumn2.forEach((progressItem, index) => {
+  storageColumn2.forEach((progressItem, index) => {
     createItemEl(progressListEl, 1, progressItem.description, index, progressItem.label, progressItem.priority);
   });
-  testColumn2 = filterArray(testColumn2);
+  storageColumn2 = filterArray(storageColumn2);
   // Complete Column
   completeListEl.textContent = '';
-  testColumn3.forEach((completeItem, index) => {
+  storageColumn3.forEach((completeItem, index) => {
     createItemEl(completeListEl, 2, completeItem.description, index, completeItem.label, completeItem.priority);
   });
-  testColumn3 = filterArray(testColumn3);
+  storageColumn3 = filterArray(storageColumn3);
   // On Hold Column
   onHoldListEl.textContent = '';
-  testColumn4.forEach((onHoldItem, index) => {
+  storageColumn4.forEach((onHoldItem, index) => {
     createItemEl(onHoldListEl, 3, onHoldItem.description, index, onHoldItem.label, onHoldItem.priority);
   });
-  testColumn4 = filterArray(testColumn4);
+  storageColumn4 = filterArray(storageColumn4);
   // Don't run more than once, Update Local Storage
   updatedOnLoad = true;
   updateSavedColumns();
@@ -528,24 +534,18 @@ function UserListToTask() {
   })
 }
 
-let test = {
-  description: "0",
-  priority: "1",
-  label: "2"
-};
-
 // Add to Column List, Reset Textbox
 function addToColumn(column) {
   const addItems = document.querySelectorAll('.add-item');
 
-  test.description = addItems[column].textContent;
-  const selectedTestList = testList[column];
+  storage.description = addItems[column].textContent;
+  const selectedstorageList = storageList[column];
 
-  selectedTestList.push(test);
+  selectedstorageList.push(storage);
 
   addItems[column].textContent = '';
   updateDOM(column);
-  test ={};
+  storage ={};
 }
 
 function resetChoice() {
@@ -621,14 +621,14 @@ function hideInputBox(column) {
         columnsModal[column].style.display = 'none';
         userLabel.forEach((el, index) => {
           if (index === column) {
-            test.label = el.options[el.selectedIndex].text;
+            storage.label = el.options[el.selectedIndex].text;
           }
           el.selectedIndex = 0;
         })
 
         priorityChoice.forEach((el, index) => {
           if (index === column) {
-            test.priority = el.options[el.selectedIndex].text;
+            storage.priority = el.options[el.selectedIndex].text;
           }
           el.selectedIndex = 0;
         })
@@ -651,37 +651,37 @@ function rebuildArrays() {
   const completeListEl = document.getElementById('complete-list');
   const onHoldListEl = document.getElementById('on-hold-list');
 
-  testColumn1 = [];
+  storageColumn1 = [];
   for (let i = 0; i < backlogListEl.children.length; i++) {
-    test.description = backlogListEl.children[i].firstElementChild.textContent;
-    test.label = backlogListEl.children[i].dataset.worker;
-    test.priority = backlogListEl.children[i].dataset.prio;
-    testColumn1.push(test);
-    test = {};
+    storage.description = backlogListEl.children[i].firstElementChild.textContent;
+    storage.label = backlogListEl.children[i].dataset.worker;
+    storage.priority = backlogListEl.children[i].dataset.prio;
+    storageColumn1.push(storage);
+    storage = {};
   }
-  testColumn2 = [];
+  storageColumn2 = [];
   for (let i = 0; i < progressListEl.children.length; i++) {
-    test.description = progressListEl.children[i].firstElementChild.textContent;
-    test.label = progressListEl.children[i].dataset.worker;
-    test.priority = progressListEl.children[i].dataset.prio;
-    testColumn2.push(test);
-    test = {};
+    storage.description = progressListEl.children[i].firstElementChild.textContent;
+    storage.label = progressListEl.children[i].dataset.worker;
+    storage.priority = progressListEl.children[i].dataset.prio;
+    storageColumn2.push(storage);
+    storage = {};
   }
-  testColumn3 = [];
+  storageColumn3 = [];
   for (let i = 0; i < completeListEl.children.length; i++) {
-    test.description = completeListEl.children[i].firstElementChild.textContent;
-    test.label = completeListEl.children[i].dataset.worker;
-    test.priority = completeListEl.children[i].dataset.prio;
-    testColumn3.push(test);
-    test = {};
+    storage.description = completeListEl.children[i].firstElementChild.textContent;
+    storage.label = completeListEl.children[i].dataset.worker;
+    storage.priority = completeListEl.children[i].dataset.prio;
+    storageColumn3.push(storage);
+    storage = {};
   }
-  testColumn4 = [];
+  storageColumn4 = [];
   for (let i = 0; i < onHoldListEl.children.length; i++) {
-    test.description = onHoldListEl.children[i].firstElementChild.textContent;
-    test.label = onHoldListEl.children[i].dataset.worker;
-    test.priority = onHoldListEl.children[i].dataset.prio;
-    testColumn4.push(test);
-    test = {};
+    storage.description = onHoldListEl.children[i].firstElementChild.textContent;
+    storage.label = onHoldListEl.children[i].dataset.worker;
+    storage.priority = onHoldListEl.children[i].dataset.prio;
+    storageColumn4.push(storage);
+    storage = {};
   }
   updateDOM();
 }
