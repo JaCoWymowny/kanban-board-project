@@ -24,9 +24,9 @@ let priority = [
 ];
 
 let storage = {
-  description: "0",
-  priority: "1",
-  label: "2"
+  description: "",
+  priority: "",
+  label: ""
 };
 
 // Drag Functionality
@@ -41,7 +41,6 @@ function htmlTree() {
   const columnNames = ['Backlog', 'In Progress', 'Complete', 'on Hold'];
   const mainTitle = document.querySelector('.main-title');
   const site = document.querySelector('body');
-  const scripts = document.querySelectorAll('script');
 
   // add site shadow and hide it, for show modal event
   const fullscreenShadow = document.createElement('div');
@@ -71,7 +70,7 @@ function htmlTree() {
 
   const allColumnLi = document.querySelectorAll('.drag-column');
   allColumnLi.forEach((el, index) => {
-
+    console.log(el);
     const spanHeader = document.createElement('span');
     spanHeader.classList.add('header');
     const header = document.createElement('h1');
