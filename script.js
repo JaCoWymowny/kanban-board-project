@@ -23,12 +23,6 @@ let priority = [
   {name: 'ASAP'}
 ];
 
-let storage = {
-  description: "",
-  priority: "",
-  label: ""
-};
-
 // Drag Functionality
 let draggedItem;
 let dragging = false;
@@ -37,8 +31,6 @@ let currentColumn;
 // lists + all columns for items
 function htmlTree() {
 
-  const columnAttributeNames = ['backlog', 'progress', 'complete', 'on-hold'];
-  const columnNames = ['Backlog', 'In Progress', 'Complete', 'on Hold'];
   const mainTitle = document.querySelector('.main-title');
   const site = document.querySelector('body');
 
@@ -53,24 +45,35 @@ function htmlTree() {
   const firstColumn = document.createElement('li');
   firstColumn.classList.add('drag-column');
   firstColumn.classList.add('backlog-column');
+  firstColumn.setAttribute('id', '0');
   const secondColumn = document.createElement('li');
   secondColumn.classList.add('drag-column');
   secondColumn.classList.add('progress-column');
+  secondColumn.setAttribute('id', '1');
   const thirdColumn = document.createElement('li');
   thirdColumn.classList.add('drag-column');
   thirdColumn.classList.add('complete-column');
+  thirdColumn.setAttribute('id', '2');
   const fourthColumn = document.createElement('li');
   fourthColumn.classList.add('drag-column');
   fourthColumn.classList.add('on-hold-column');
+  fourthColumn.setAttribute('id', '3');
 
   dragList.insertBefore(fourthColumn, dragList.firstChild);
   dragList.insertBefore(thirdColumn, dragList.firstChild);
   dragList.insertBefore(secondColumn, dragList.firstChild);
   dragList.insertBefore(firstColumn, dragList.firstChild);
 
+  htmlTreeBranches();
+}
+
+function htmlTreeBranches() {
+
+  const columnAttributeNames = ['backlog', 'progress', 'complete', 'on-hold'];
+  const columnNames = ['Backlog', 'In Progress', 'Complete', 'on Hold'];
   const allColumnLi = document.querySelectorAll('.drag-column');
+
   allColumnLi.forEach((el, index) => {
-    console.log(el);
     const spanHeader = document.createElement('span');
     spanHeader.classList.add('header');
     const header = document.createElement('h1');
@@ -533,20 +536,6 @@ function UserListToTask() {
   })
 }
 
-// Add to Column List, Reset Textbox
-function addToColumn(column) {
-  const addItems = document.querySelectorAll('.add-item');
-
-  storage.description = addItems[column].textContent;
-  const selectedstorageList = storageList[column];
-
-  selectedstorageList.push(storage);
-
-  addItems[column].textContent = '';
-  updateDOM(column);
-  storage ={};
-}
-
 function resetChoice() {
   const userLabel = document.querySelectorAll('.user-label');
   const priorityChoice = document.querySelectorAll('.priority-choice');
@@ -606,6 +595,7 @@ function closeInputBox(column) {
 
 // Hide Item Input Box
 function hideInputBox(column) {
+  const addItems = document.querySelectorAll('.add-item');
   const columnsModal = document.querySelectorAll('.columns-modal');
   const userLabel = document.querySelectorAll('.user-label');
   const priorityChoice = document.querySelectorAll('.priority-choice');
@@ -617,22 +607,28 @@ function hideInputBox(column) {
   saveButton.forEach((el, indexing) => {
     if (indexing === column) {
       if (addItemTextField[column].textContent !== "") {
-        columnsModal[column].style.display = 'none';
-        userLabel.forEach((el, index) => {
-          if (index === column) {
-            storage.label = el.options[el.selectedIndex].text;
-          }
-          el.selectedIndex = 0;
-        })
 
-        priorityChoice.forEach((el, index) => {
-          if (index === column) {
-            storage.priority = el.options[el.selectedIndex].text;
-          }
-          el.selectedIndex = 0;
-        })
+        const storage = {
+          label: userLabel[column].options[userLabel[column].selectedIndex].text,
+          priority: priorityChoice[column].options[priorityChoice[column].selectedIndex].text,
+          description: addItems[column].textContent
+        };
+
+        columnsModal[column].style.display = 'none';
+
+        userLabel[column].selectedIndex = 0;
+        priorityChoice[column].selectedIndex = 0;
+
         shadowAfterBoxOpen.setAttribute("hidden", true);
-        addToColumn(column);
+
+
+        const selectedstorageList = storageList[column];
+
+        selectedstorageList.push(storage);
+
+        addItems[column].textContent = '';
+
+        updateDOM(column);
       } else {
         validationText[column].style.display = 'block';
         setTimeout(function() {
@@ -649,6 +645,12 @@ function rebuildArrays() {
   const progressListEl = document.getElementById('progress-list');
   const completeListEl = document.getElementById('complete-list');
   const onHoldListEl = document.getElementById('on-hold-list');
+
+  let storage = {
+    label: '',
+    priority: '',
+    description: ''
+  };
 
   storageColumn1 = [];
   for (let i = 0; i < backlogListEl.children.length; i++) {
