@@ -511,28 +511,24 @@ function updateItem(id, column) {
   }
 }
 
-function UserListToTask() {
+function UserListToTask(column) {
   const userLabel = document.querySelectorAll('.user-label');
   const priorityChoice = document.querySelectorAll('.priority-choice');
 
   labels.forEach(function(item) {
-    userLabel.forEach((el) => {
-      const labelOption = document.createElement('option');
-      if (el.length < 3) {
+      if (userLabel[column].length < 3) {
+        const labelOption = document.createElement('option');
         labelOption.text = item.name;
-        el.add(labelOption);
+        userLabel[column].add(labelOption);
       }
-    })
   })
 
   priority.forEach(function(item) {
-    priorityChoice.forEach((el) => {
-      const priorityOption = document.createElement('option');
-      if (el.length < 4) {
+      if (priorityChoice[column].length < 4) {
+        const priorityOption = document.createElement('option');
         priorityOption.text = item.name;
-        el.add(priorityOption);
+        priorityChoice[column].add(priorityOption);
       }
-    })
   })
 }
 
@@ -570,7 +566,7 @@ function showInputBox(column) {
     }
 
     showInputBoxCounter++;
-    UserListToTask();
+    UserListToTask(column);
   } else {
     false;
   }
