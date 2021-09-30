@@ -219,7 +219,7 @@ function prioIcon() {
 }
 
 // Create DOM Elements for each list item
-function createItemEl(columnEl, column, item, index, label, priorities) {
+function createItemEl(columnEl, column, index, item) {
   let toggleButtonCounter = 0;
   const listColumns = document.querySelectorAll('.drag-item-list');
   const shadowAfterBoxOpen = document.querySelector('.fullscreen');
@@ -228,14 +228,14 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
   const liText = document.createElement('p');
   const liPrio =document.createElement('p');
 
-  liPrio.dataset.prio = priorities;
+  liPrio.dataset.prio = item.priority;
   liPrio.classList.add('icon');
-  liText.textContent = item;
+  liText.textContent = item.description;
   liText.classList.add('text');
   liText.setAttribute('ondragstart', 'drag(event)');
   listEl.id = index;
-  listEl.dataset.worker = label;
-  listEl.dataset.prio = priorities;
+  listEl.dataset.worker = item.label;
+  listEl.dataset.prio = item.priority;
   listEl.classList.add('drag-item');
   listEl.draggable = true;
   listEl.setAttribute('ondragstart', 'drag(event)');
@@ -455,6 +455,13 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
   prioIcon();
 }
 
+function createElementOnCurrentColumn(listEl, storageColumn, column) {
+  listEl.textContent = '';
+  storageColumn.forEach((item, index) => {
+    createItemEl(listEl, column, index, item);
+  });
+}
+
 // Update Columns in DOM - Reset HTML, Filter Array, Update localStorage
 function updateDOM() {
   showInputBoxCounter = 0;
@@ -467,30 +474,24 @@ function updateDOM() {
   if (!updatedOnLoad) {
     getSavedColumns();
   }
+
   // Backlog Column
-  backlogListEl.textContent = '';
-  storageColumn1.forEach((backlogItem, index) => {
-      createItemEl(backlogListEl, 0, backlogItem.description, index, backlogItem.label, backlogItem.priority);
-  });
+  createElementOnCurrentColumn(backlogListEl, storageColumn1, 0);
   storageColumn1 = filterArray(storageColumn1);
+
   // Progress Column
-  progressListEl.textContent = '';
-  storageColumn2.forEach((progressItem, index) => {
-    createItemEl(progressListEl, 1, progressItem.description, index, progressItem.label, progressItem.priority);
-  });
+  createElementOnCurrentColumn(progressListEl, storageColumn2, 1);
   storageColumn2 = filterArray(storageColumn2);
+
   // Complete Column
-  completeListEl.textContent = '';
-  storageColumn3.forEach((completeItem, index) => {
-    createItemEl(completeListEl, 2, completeItem.description, index, completeItem.label, completeItem.priority);
-  });
+  createElementOnCurrentColumn(completeListEl, storageColumn3, 2);
   storageColumn3 = filterArray(storageColumn3);
+
+
   // On Hold Column
-  onHoldListEl.textContent = '';
-  storageColumn4.forEach((onHoldItem, index) => {
-    createItemEl(onHoldListEl, 3, onHoldItem.description, index, onHoldItem.label, onHoldItem.priority);
-  });
+  createElementOnCurrentColumn(onHoldListEl, storageColumn4, 3);
   storageColumn4 = filterArray(storageColumn4);
+
   // Don't run more than once, Update Local Storage
   updatedOnLoad = true;
   updateSavedColumns();
@@ -618,13 +619,13 @@ function hideInputBox(column) {
         shadowAfterBoxOpen.setAttribute("hidden", true);
 
 
-        const selectedstorageList = storageList[column];
+        const selectedStorageList = storageList[column];
 
-        selectedstorageList.push(storage);
+        selectedStorageList.push(storage);
 
         addItems[column].textContent = '';
 
-        updateDOM(column);
+        updateDOM();
       } else {
         validationText[column].style.display = 'block';
         setTimeout(function() {
@@ -635,6 +636,15 @@ function hideInputBox(column) {
   })
 }
 
+function rebuildStorage(index, storageColumn, listEl) {
+  const storage = {
+    description: listEl.children[index].firstElementChild.textContent,
+    label: listEl.children[index].dataset.worker,
+    priority: listEl.children[index].dataset.prio
+  }
+  storageColumn.push(storage);
+}
+
 // Allows arrays to reflect Drag and Drop items
 function rebuildArrays() {
   const backlogListEl = document.getElementById('backlog-list');
@@ -642,43 +652,25 @@ function rebuildArrays() {
   const completeListEl = document.getElementById('complete-list');
   const onHoldListEl = document.getElementById('on-hold-list');
 
-  let storage = {
-    label: '',
-    priority: '',
-    description: ''
-  };
-
   storageColumn1 = [];
-  for (let i = 0; i < backlogListEl.children.length; i++) {
-    storage.description = backlogListEl.children[i].firstElementChild.textContent;
-    storage.label = backlogListEl.children[i].dataset.worker;
-    storage.priority = backlogListEl.children[i].dataset.prio;
-    storageColumn1.push(storage);
-    storage = {};
-  }
   storageColumn2 = [];
-  for (let i = 0; i < progressListEl.children.length; i++) {
-    storage.description = progressListEl.children[i].firstElementChild.textContent;
-    storage.label = progressListEl.children[i].dataset.worker;
-    storage.priority = progressListEl.children[i].dataset.prio;
-    storageColumn2.push(storage);
-    storage = {};
-  }
   storageColumn3 = [];
-  for (let i = 0; i < completeListEl.children.length; i++) {
-    storage.description = completeListEl.children[i].firstElementChild.textContent;
-    storage.label = completeListEl.children[i].dataset.worker;
-    storage.priority = completeListEl.children[i].dataset.prio;
-    storageColumn3.push(storage);
-    storage = {};
-  }
   storageColumn4 = [];
+
+  for (let i = 0; i < backlogListEl.children.length; i++) {
+     rebuildStorage(i, storageColumn1, backlogListEl);
+  }
+
+  for (let i = 0; i < progressListEl.children.length; i++) {
+    rebuildStorage(i, storageColumn2, progressListEl);
+  }
+
+  for (let i = 0; i < completeListEl.children.length; i++) {
+    rebuildStorage(i, storageColumn3,completeListEl);
+  }
+
   for (let i = 0; i < onHoldListEl.children.length; i++) {
-    storage.description = onHoldListEl.children[i].firstElementChild.textContent;
-    storage.label = onHoldListEl.children[i].dataset.worker;
-    storage.priority = onHoldListEl.children[i].dataset.prio;
-    storageColumn4.push(storage);
-    storage = {};
+    rebuildStorage(i, storageColumn4, onHoldListEl);
   }
   updateDOM();
 }
