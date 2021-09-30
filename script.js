@@ -431,26 +431,26 @@ function createItemEl(columnEl, column, index, item) {
       })
 
       // append new task window to website
-      closeButtonX.append(awesomeIconX);
-      openTask.append(closeButtonX);
-      openTask.append(openTaskText);
-      validateWindow.append(validateSpan);
-      openTask.append(validateWindow);
+      closeButtonX.appendChild(awesomeIconX);
+      openTask.appendChild(closeButtonX);
+      openTask.appendChild(openTaskText);
+      validateWindow.appendChild(validateSpan);
+      openTask.appendChild(validateWindow);
       priorityStatus.append(priorityStatusText, tooglePriority);
-      openTask.append(priorityStatus);
-      openTask.append(editablePriorityWindow);
+      openTask.appendChild(priorityStatus);
+      openTask.appendChild(editablePriorityWindow);
       responsibleUserBox.append(responsibleUserValue, responsibleObjectChoice);
-      openTask.append(responsibleUserBox);
+      openTask.appendChild(responsibleUserBox);
       boxForButtons.append(deleteTaskButton, saveChangesButton);
-      openTask.append(boxForButtons);
+      openTask.appendChild(boxForButtons);
       columnEl.appendChild(openTask);
     } else {
       false;
     }
   })
   // Append
-  listEl.append(liText);
-  listEl.append(liPrio);
+  listEl.appendChild(liText);
+  listEl.appendChild(liPrio);
   columnEl.appendChild(listEl);
   prioIcon();
 }
