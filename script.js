@@ -1,29 +1,12 @@
-const dragList = document.querySelector('.drag-list');
 
 // Items
 let updatedOnLoad = false;
-let choosenWorker = "";
-let choosenPriority = "";
-let showInputBoxCounter = 0;
 
-// Initialize Arrays
-let backlogListArray = [];
-let progressListArray = [];
-let completeListArray = [];
-let onHoldListArray = [];
-let listArrays = [];
-
-let backlogLabels = [];
-let progressLabels = [];
-let completeLabels = [];
-let onHoldLabels = [];
-let listLabels = [];
-
-let backlogPrio = [];
-let progressPrio = [];
-let completePrio = [];
-let onHoldPrio = [];
-let listPrio = [];
+let storageColumn1 = [];
+let storageColumn2 = [];
+let storageColumn3 = [];
+let storageColumn4 = [];
+let storageList = [];
 
 let labels = [
   {name: ""},
@@ -43,175 +26,25 @@ let draggedItem;
 let dragging = false;
 let currentColumn;
 
-// lists + all columns for items
-function htmlTree() {
 
-  const columnAttributeNames = ['backlog', 'progress', 'complete', 'on-hold'];
-  const columnNames = ['Backlog', 'In Progress', 'Complete', 'on Hold'];
-  const mainTitle = document.querySelector('.main-title');
-  const site = document.querySelector('body');
-  const scripts = document.querySelectorAll('script');
-
-  // add site shadow and hide it, for show modal event
-  const fullscreenShadow = document.createElement('div');
-  fullscreenShadow.classList.add('fullscreen');
-  fullscreenShadow.setAttribute("hidden", true);
-
-  site.insertBefore(fullscreenShadow, mainTitle);
-
-  // add four column to drag-container div
-  const firstColumn = document.createElement('li');
-  firstColumn.classList.add('drag-column');
-  firstColumn.classList.add('backlog-column');
-  const secondColumn = document.createElement('li');
-  secondColumn.classList.add('drag-column');
-  secondColumn.classList.add('progress-column');
-  const thirdColumn = document.createElement('li');
-  thirdColumn.classList.add('drag-column');
-  thirdColumn.classList.add('complete-column');
-  const fourthColumn = document.createElement('li');
-  fourthColumn.classList.add('drag-column');
-  fourthColumn.classList.add('on-hold-column');
-
-  dragList.insertBefore(fourthColumn, dragList.firstChild);
-  dragList.insertBefore(thirdColumn, dragList.firstChild);
-  dragList.insertBefore(secondColumn, dragList.firstChild);
-  dragList.insertBefore(firstColumn, dragList.firstChild);
-
-  const allColumnLi = document.querySelectorAll('.drag-column');
-  allColumnLi.forEach((el, index) => {
-
-    const spanHeader = document.createElement('span');
-    spanHeader.classList.add('header');
-    const header = document.createElement('h1');
-    header.textContent = columnNames[index];
-
-    const columnContent = document.createElement('div');
-    columnContent.id = columnAttributeNames[index] + '-content';
-    columnContent.classList.add('custom-scroll');
-    const columnContentList = document.createElement('ul');
-    columnContentList.classList.add('drag-item-list')
-    columnContentList.id = columnAttributeNames[index] + '-list';
-    columnContentList.setAttribute('ondrop', `drop(event)`);
-    columnContentList.setAttribute('ondragover', `allowDrop(event)`);
-    columnContentList.setAttribute('ondragenter', `dragEnter(${index})`);
-
-    const columnAddButton = document.createElement('div');
-    columnAddButton.classList.add('add-btn-group');
-    const addButtonBox = document.createElement('div');
-    addButtonBox.classList.add('add-btn');
-    addButtonBox.setAttribute('onclick', `showInputBox(${index})`);
-    const plusSpan = document.createElement('span');
-    plusSpan.classList.add('plus-sign');
-    plusSpan.textContent = '+';
-    const plusText = document.createElement('span');
-    plusText.textContent = 'Add Item';
-
-    const addModal = document.createElement('div');
-    addModal.classList.add('modal');
-    addModal.classList.add('columns-modal');
-
-    const closeButtonX = document.createElement('button');
-    closeButtonX.classList.add('close-x');
-    closeButtonX.setAttribute('onclick', `closeInputBox(${index})`);
-    const awesomeIconX = document.createElement('i');
-    awesomeIconX.classList.add('far');
-    awesomeIconX.classList.add('fa-times-circle');
-    awesomeIconX.classList.add('fa-2x');
-    const addItemModal = document.createElement('span');
-    addItemModal.classList.add('add-item');
-    addItemModal.classList.add('validate');
-    addItemModal.contentEditable = true;
-
-    const validateWindow = document.createElement('div');
-    validateWindow.classList.add('valid-window');
-
-    const validateSpan = document.createElement('span');
-    validateSpan.classList.add('valid-text');
-    validateSpan.textContent = "Text Field Is Empty!";
-
-    const modalSelectBoxPriority = document.createElement('div');
-    modalSelectBoxPriority.classList.add('select-box');
-    const prioritySpan = document.createElement('span');
-    prioritySpan.textContent = 'Priority: ';
-    const selectPrio = document.createElement('select');
-    selectPrio.classList.add('priority-choice');
-    selectPrio.classList.add('select-menu');
-
-    const modalSelectBoxUser = document.createElement('div');
-    modalSelectBoxUser.classList.add('select-box');
-    const userSpan = document.createElement('span');
-    userSpan.textContent = 'User: ';
-    const selectUser = document.createElement('select');
-    selectUser.classList.add('user-label');
-    selectUser.classList.add('select-menu');
-
-    const siteButton = document.createElement('span');
-    siteButton.classList.add('columns-submit');
-    siteButton.classList.add('submit-button');
-    siteButton.setAttribute('onclick', `hideInputBox(${index})`);
-    siteButton.textContent = 'Save task !';
-
-    spanHeader.append(header);
-    el.append(spanHeader);
-    columnContent.append(columnContentList);
-    el.append(columnContent);
-    addButtonBox.append(plusSpan, plusText);
-    columnAddButton.append(addButtonBox);
-    el.append(columnAddButton);
-
-    closeButtonX.append(awesomeIconX);
-    addModal.append(closeButtonX);
-    addModal.append(addItemModal);
-    validateWindow.append(validateSpan);
-    addModal.append(validateWindow);
-    modalSelectBoxPriority.append(prioritySpan, selectPrio);
-    addModal.append(modalSelectBoxPriority);
-    modalSelectBoxUser.append(userSpan, selectUser);
-    addModal.append(modalSelectBoxUser);
-    addModal.append(modalSelectBoxPriority);
-    addModal.append(siteButton);
-    el.append(addModal);
-  })
-}
 
 // Get Arrays from localStorage if available, without default value
 function getSavedColumns() {
-  if (localStorage.getItem('backlogItems')) {
-    backlogListArray = JSON.parse(localStorage.backlogItems);
-    progressListArray = JSON.parse(localStorage.progressItems);
-    completeListArray = JSON.parse(localStorage.completeItems);
-    onHoldListArray = JSON.parse(localStorage.onHoldItems);
-  } if (localStorage.getItem('firstLabels')) {
-    backlogLabels = JSON.parse(localStorage.firstLabels);
-    progressLabels = JSON.parse(localStorage.secondLabels);
-    completeLabels = JSON.parse(localStorage.thirdLabels);
-    onHoldLabels = JSON.parse(localStorage.lastLabels);
-  } if (localStorage.getItem('firstPrio')) {
-    backlogPrio = JSON.parse(localStorage.firstPrio);
-    progressPrio = JSON.parse(localStorage.secondPrio);
-    completePrio = JSON.parse(localStorage.thirdPrio);
-    onHoldPrio = JSON.parse(localStorage.lastPrio);
+  if (localStorage.getItem('storage1')) {
+    storageColumn1 = JSON.parse(localStorage.storage1);
+    storageColumn2 = JSON.parse(localStorage.storage2);
+    storageColumn3 = JSON.parse(localStorage.storage3);
+    storageColumn4 = JSON.parse(localStorage.storage4);
   }
 }
 
 // Set localStorage Arrays
 function updateSavedColumns() {
-  listArrays = [backlogListArray, progressListArray, completeListArray, onHoldListArray];
-  const arrayNames = ['backlog', 'progress', 'complete', 'onHold'];
-  arrayNames.forEach((arrayName, index) => {
-    localStorage.setItem(`${arrayName}Items`, JSON.stringify(listArrays[index]));
+  storageList = [storageColumn1, storageColumn2, storageColumn3, storageColumn4];
+  const storageNames = ['1', '2', '3', '4'];
+  storageNames.forEach((storageName, index) => {
+    localStorage.setItem(`storage${storageName}`, JSON.stringify(storageList[index]));
   });
-  listLabels = [backlogLabels, progressLabels, completeLabels, onHoldLabels];
-  const labelNames = ['first', 'second', 'third', 'last'];
-  labelNames.forEach((labelName, index) => {
-    localStorage.setItem(`${labelName}Labels`, JSON.stringify(listLabels[index]));
-  });
-  listPrio = [backlogPrio, progressPrio, completePrio, onHoldPrio];
-  const prioNames = ['first', 'second', 'third', 'last'];
-  prioNames.forEach((prioName, index) => {
-    localStorage.setItem(`${prioName}Prio`, JSON.stringify(listPrio[index]));
-  })
 }
 
 // Filter Array to remove empty values
@@ -246,8 +79,7 @@ function prioIcon() {
 }
 
 // Create DOM Elements for each list item
-function createItemEl(columnEl, column, item, index, label, priorities) {
-  let toggleButtonCounter = 0;
+function createItemEl(columnEl, column, index, item) {
   const listColumns = document.querySelectorAll('.drag-item-list');
   const shadowAfterBoxOpen = document.querySelector('.fullscreen');
   // List Item
@@ -255,27 +87,23 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
   const liText = document.createElement('p');
   const liPrio =document.createElement('p');
 
-  liPrio.dataset.prio = priorities;
+  liPrio.dataset.prio = item.priority;
   liPrio.classList.add('icon');
-  liText.textContent = item;
+  liText.textContent = item.description;
   liText.classList.add('text');
   liText.setAttribute('ondragstart', 'drag(event)');
   listEl.id = index;
-  listEl.dataset.worker = label;
-  listEl.dataset.prio = priorities;
+  listEl.dataset.worker = item.label;
+  listEl.dataset.prio = item.priority;
   listEl.classList.add('drag-item');
   listEl.draggable = true;
   listEl.setAttribute('ondragstart', 'drag(event)');
-
   listEl.addEventListener('click', function() {
-    if (showInputBoxCounter === 0) {
-      showInputBoxCounter++;
 
       // add event and show shadow on screen
       shadowAfterBoxOpen.removeAttribute("hidden");
       shadowAfterBoxOpen.onclick = function(e) {
         if (e.target) {
-          toggleButtonCounter = 0;
           openTask.remove();
           shadowAfterBoxOpen.setAttribute("hidden", true);
           rebuildArrays();
@@ -291,7 +119,6 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       closeButtonX.classList.add('close-x');
       closeButtonX.classList.add('toggle-x');
       closeButtonX.addEventListener('click', function() {
-        toggleButtonCounter = 0;
         openTask.remove();
         shadowAfterBoxOpen.setAttribute("hidden", true);
         rebuildArrays();
@@ -319,7 +146,6 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
 
       const actuallyClickedListElement = listColumns[column].children;
       const actuallyId = actuallyClickedListElement[index].id;
-
       const editablePriorityWindow = document.createElement('div');
       editablePriorityWindow.classList.add('editable-priority-box')
 
@@ -330,34 +156,29 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       priorityStatusText.classList.add('temporary-color');
       const tooglePriority = document.createElement('span');
       tooglePriority.classList.add('choice-priority');
-      listPrio.forEach((el, index) => {
-        if (index === column) {
-          el.forEach((listElement, index) => {
-            if (parseInt(actuallyId) === index) {
-              tooglePriority.textContent = listElement;
-              if (listElement === "") {
-                tooglePriority.textContent = "Open priority window";
-              }
-              if (tooglePriority.textContent === "Low") {
-                tooglePriority.style.color = 'white';
-              }
-              if (tooglePriority.textContent === "Mid") {
-                tooglePriority.style.color = 'yellow';
-              }
-              if (tooglePriority.textContent === "ASAP") {
-                tooglePriority.style.color = 'red';
-              }
-            }
-          })
+
+      storageList[column].forEach((listElement, index) => {
+
+        if (parseInt(actuallyId) === index) {
+
+          tooglePriority.textContent = listElement.priority;
+          if (listElement.priority === "") {
+            tooglePriority.textContent = "Open priority window";
+          }
+          if (tooglePriority.textContent === "Low") {
+            tooglePriority.style.color = 'white';
+          }
+          if (tooglePriority.textContent === "Mid") {
+            tooglePriority.style.color = 'yellow';
+          }
+          if (tooglePriority.textContent === "ASAP") {
+            tooglePriority.style.color = 'red';
+          }
         }
       })
 
       // create choice to priority select menu
-      tooglePriority.addEventListener('click', function(e) {
-        if (toggleButtonCounter !== 0) {
-          return;
-        }
-        toggleButtonCounter++;
+      tooglePriority.addEventListener('click', function() {
 
         const select = document.createElement('select');
         select.classList.add('priority-choice', 'select-menu');
@@ -404,16 +225,12 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       const responsibleUserValue = document.createElement('span');
       responsibleUserValue.classList.add('temporary-color');
       responsibleUserValue.textContent = 'Label: ';
-      const responsibleObjectTest = document.createElement('span');
-      responsibleObjectTest.classList.add('choice-user');
-      responsibleObjectTest.classList.add('temporary-color');
-      listLabels.forEach((el, index) => {
-        if (index === column) {
-          el.forEach((listElement, index) => {
-            if (parseInt(actuallyId) === index) {
-              responsibleObjectTest.textContent = listElement;
-            }
-          })
+      const responsibleObjectChoice = document.createElement('span');
+      responsibleObjectChoice.classList.add('choice-user');
+      responsibleObjectChoice.classList.add('temporary-color');
+      storageList[column].forEach((listElement, index) => {
+        if (parseInt(actuallyId) === index) {
+          responsibleObjectChoice.textContent = listElement.label;
         }
       })
 
@@ -446,7 +263,6 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
           return
         }
 
-        toggleButtonCounter = 0;
         liText.textContent = openTaskText.textContent;
         listEl.dataset.prio = tooglePriority.textContent;
         if (listEl.dataset.prio === "Priority is not set") {
@@ -458,33 +274,36 @@ function createItemEl(columnEl, column, item, index, label, priorities) {
       })
 
       // append new task window to website
-      closeButtonX.append(awesomeIconX);
-      openTask.append(closeButtonX);
-      openTask.append(openTaskText);
-      validateWindow.append(validateSpan);
-      openTask.append(validateWindow);
+      closeButtonX.appendChild(awesomeIconX);
+      openTask.appendChild(closeButtonX);
+      openTask.appendChild(openTaskText);
+      validateWindow.appendChild(validateSpan);
+      openTask.appendChild(validateWindow);
       priorityStatus.append(priorityStatusText, tooglePriority);
-      openTask.append(priorityStatus);
-      openTask.append(editablePriorityWindow);
-      responsibleUserBox.append(responsibleUserValue, responsibleObjectTest);
-      openTask.append(responsibleUserBox);
+      openTask.appendChild(priorityStatus);
+      openTask.appendChild(editablePriorityWindow);
+      responsibleUserBox.append(responsibleUserValue, responsibleObjectChoice);
+      openTask.appendChild(responsibleUserBox);
       boxForButtons.append(deleteTaskButton, saveChangesButton);
-      openTask.append(boxForButtons);
+      openTask.appendChild(boxForButtons);
       columnEl.appendChild(openTask);
-    } else {
-      false;
-    }
   })
   // Append
-  listEl.append(liText);
-  listEl.append(liPrio);
+  listEl.appendChild(liText);
+  listEl.appendChild(liPrio);
   columnEl.appendChild(listEl);
   prioIcon();
 }
 
+function createElementOnCurrentColumn(listEl, storageColumn, column) {
+  listEl.textContent = '';
+  storageColumn.forEach((item, index) => {
+    createItemEl(listEl, column, index, item);
+  });
+}
+
 // Update Columns in DOM - Reset HTML, Filter Array, Update localStorage
 function updateDOM() {
-  showInputBoxCounter = 0;
   const backlogListEl = document.getElementById('backlog-list');
   const progressListEl = document.getElementById('progress-list');
   const completeListEl = document.getElementById('complete-list');
@@ -494,30 +313,24 @@ function updateDOM() {
   if (!updatedOnLoad) {
     getSavedColumns();
   }
+
   // Backlog Column
-  backlogListEl.textContent = '';
-  backlogListArray.forEach((backlogItem, index) => {
-      createItemEl(backlogListEl, 0, backlogItem, index, backlogLabels[index], backlogPrio[index]);
-  });
-  backlogListArray = filterArray(backlogListArray);
+  createElementOnCurrentColumn(backlogListEl, storageColumn1, 0);
+  storageColumn1 = filterArray(storageColumn1);
+
   // Progress Column
-  progressListEl.textContent = '';
-  progressListArray.forEach((progressItem, index) => {
-    createItemEl(progressListEl, 1, progressItem, index, progressLabels[index], progressPrio[index]);
-  });
-  progressListArray = filterArray(progressListArray);
+  createElementOnCurrentColumn(progressListEl, storageColumn2, 1);
+  storageColumn2 = filterArray(storageColumn2);
+
   // Complete Column
-  completeListEl.textContent = '';
-  completeListArray.forEach((completeItem, index) => {
-    createItemEl(completeListEl, 2, completeItem, index, completeLabels[index], completePrio[index]);
-  });
-  completeListArray = filterArray(completeListArray);
+  createElementOnCurrentColumn(completeListEl, storageColumn3, 2);
+  storageColumn3 = filterArray(storageColumn3);
+
+
   // On Hold Column
-  onHoldListEl.textContent = '';
-  onHoldListArray.forEach((onHoldItem, index) => {
-    createItemEl(onHoldListEl, 3, onHoldItem, index, onHoldLabels[index], onHoldPrio[index]);
-  });
-  onHoldListArray = filterArray(onHoldListArray);
+  createElementOnCurrentColumn(onHoldListEl, storageColumn4, 3);
+  storageColumn4 = filterArray(storageColumn4);
+
   // Don't run more than once, Update Local Storage
   updatedOnLoad = true;
   updateSavedColumns();
@@ -538,50 +351,25 @@ function updateItem(id, column) {
   }
 }
 
-function UserListToTask() {
+function UserListToTask(column) {
   const userLabel = document.querySelectorAll('.user-label');
   const priorityChoice = document.querySelectorAll('.priority-choice');
 
   labels.forEach(function(item) {
-    userLabel.forEach((el) => {
-      const labelOption = document.createElement('option');
-      if (el.length < 3) {
+      if (userLabel[column].length < 3) {
+        const labelOption = document.createElement('option');
         labelOption.text = item.name;
-        el.add(labelOption);
+        userLabel[column].add(labelOption);
       }
-    })
   })
 
   priority.forEach(function(item) {
-    priorityChoice.forEach((el) => {
-      const priorityOption = document.createElement('option');
-      if (el.length < 4) {
+      if (priorityChoice[column].length < 4) {
+        const priorityOption = document.createElement('option');
         priorityOption.text = item.name;
-        el.add(priorityOption);
+        priorityChoice[column].add(priorityOption);
       }
-    })
   })
-}
-
-// Add to Column List, Reset Textbox
-function addToColumn(column) {
-  const addItems = document.querySelectorAll('.add-item');
-  const itemText = addItems[column].textContent;
-  const selectedArray = listArrays[column];
-
-  const labelText = choosenWorker;
-  const selectedLabels = listLabels[column];
-
-  const prioText = choosenPriority;
-  const selectedPriority = listPrio[column];
-
-  selectedArray.push(itemText);
-  selectedLabels.push(labelText);
-  selectedPriority.push(prioText);
-
-  addItems[column].textContent = '';
-
-  updateDOM(column);
 }
 
 function resetChoice() {
@@ -598,7 +386,6 @@ function resetChoice() {
 
 // Show Add Item Input Box
 function showInputBox(column) {
-  if (showInputBoxCounter === 0) {
     const columnsModal = document.querySelectorAll('.columns-modal');
     const validationText = document.querySelectorAll('.valid-text');
     const addItemTextField = document.querySelectorAll('.validate');
@@ -612,16 +399,10 @@ function showInputBox(column) {
         shadowAfterBoxOpen.setAttribute("hidden", true);
         addItemTextField[column].textContent = "";
         columnsModal[column].style.display = 'none';
-        showInputBoxCounter = 0;
         resetChoice();
       }
     }
-
-    showInputBoxCounter++;
-    UserListToTask();
-  } else {
-    false;
-  }
+    UserListToTask(column);
 }
 
 function closeInputBox(column) {
@@ -635,7 +416,6 @@ function closeInputBox(column) {
       addItemTextField[column].textContent = "";
       columnsModal[column].style.display = 'none';
       shadowAfterBoxOpen.setAttribute("hidden", true);
-      showInputBoxCounter = 0;
       resetChoice();
     }
   })
@@ -643,6 +423,7 @@ function closeInputBox(column) {
 
 // Hide Item Input Box
 function hideInputBox(column) {
+  const addItems = document.querySelectorAll('.add-item');
   const columnsModal = document.querySelectorAll('.columns-modal');
   const userLabel = document.querySelectorAll('.user-label');
   const priorityChoice = document.querySelectorAll('.priority-choice');
@@ -654,22 +435,28 @@ function hideInputBox(column) {
   saveButton.forEach((el, indexing) => {
     if (indexing === column) {
       if (addItemTextField[column].textContent !== "") {
-        columnsModal[column].style.display = 'none';
-        userLabel.forEach((el, index) => {
-          if (index === column) {
-            choosenWorker = el.options[el.selectedIndex].text;
-          }
-          el.selectedIndex = 0;
-        })
 
-        priorityChoice.forEach((el, index) => {
-          if (index === column) {
-            choosenPriority = el.options[el.selectedIndex].text;
-          }
-          el.selectedIndex = 0;
-        })
+        const storage = {
+          label: userLabel[column].options[userLabel[column].selectedIndex].text,
+          priority: priorityChoice[column].options[priorityChoice[column].selectedIndex].text,
+          description: addItems[column].textContent
+        };
+
+        columnsModal[column].style.display = 'none';
+
+        userLabel[column].selectedIndex = 0;
+        priorityChoice[column].selectedIndex = 0;
+
         shadowAfterBoxOpen.setAttribute("hidden", true);
-        addToColumn(column);
+
+
+        const selectedStorageList = storageList[column];
+
+        selectedStorageList.push(storage);
+
+        addItems[column].textContent = '';
+
+        updateDOM();
       } else {
         validationText[column].style.display = 'block';
         setTimeout(function() {
@@ -680,6 +467,15 @@ function hideInputBox(column) {
   })
 }
 
+function rebuildStorage(index, storageColumn, listEl) {
+  const storage = {
+    description: listEl.children[index].firstElementChild.textContent,
+    label: listEl.children[index].dataset.worker,
+    priority: listEl.children[index].dataset.prio
+  }
+  storageColumn.push(storage);
+}
+
 // Allows arrays to reflect Drag and Drop items
 function rebuildArrays() {
   const backlogListEl = document.getElementById('backlog-list');
@@ -687,55 +483,25 @@ function rebuildArrays() {
   const completeListEl = document.getElementById('complete-list');
   const onHoldListEl = document.getElementById('on-hold-list');
 
-  backlogListArray = [];
+  storageColumn1 = [];
+  storageColumn2 = [];
+  storageColumn3 = [];
+  storageColumn4 = [];
+
   for (let i = 0; i < backlogListEl.children.length; i++) {
-    backlogListArray.push(backlogListEl.children[i].firstElementChild.textContent);
-  }
-  progressListArray = [];
-  for (let i = 0; i < progressListEl.children.length; i++) {
-    progressListArray.push(progressListEl.children[i].firstElementChild.textContent);
-  }
-  completeListArray = [];
-  for (let i = 0; i < completeListEl.children.length; i++) {
-    completeListArray.push(completeListEl.children[i].firstElementChild.textContent);
-  }
-  onHoldListArray = [];
-  for (let i = 0; i < onHoldListEl.children.length; i++) {
-    onHoldListArray.push(onHoldListEl.children[i].firstElementChild.textContent);
+     rebuildStorage(i, storageColumn1, backlogListEl);
   }
 
-  backlogLabels = [];
-  for (let i = 0; i < backlogListEl.children.length; i++) {
-    backlogLabels.push(backlogListEl.children[i].dataset.worker);
-  }
-  progressLabels = [];
   for (let i = 0; i < progressListEl.children.length; i++) {
-    progressLabels.push(progressListEl.children[i].dataset.worker);
-  }
-  completeLabels = [];
-  for (let i = 0; i < completeListEl.children.length; i++) {
-    completeLabels.push(completeListEl.children[i].dataset.worker);
-  }
-  onHoldLabels = [];
-  for (let i = 0; i < onHoldListEl.children.length; i++) {
-    onHoldLabels.push(onHoldListEl.children[i].dataset.worker);
+    rebuildStorage(i, storageColumn2, progressListEl);
   }
 
-  backlogPrio = [];
-  for (let i = 0; i < backlogListEl.children.length; i++) {
-    backlogPrio.push(backlogListEl.children[i].dataset.prio);
-  }
-  progressPrio = [];
-  for (let i = 0; i < progressListEl.children.length; i++) {
-    progressPrio.push(progressListEl.children[i].dataset.prio);
-  }
-  completePrio = [];
   for (let i = 0; i < completeListEl.children.length; i++) {
-    completePrio.push(completeListEl.children[i].dataset.prio);
+    rebuildStorage(i, storageColumn3,completeListEl);
   }
-  onHoldPrio = [];
+
   for (let i = 0; i < onHoldListEl.children.length; i++) {
-    onHoldPrio.push(onHoldListEl.children[i].dataset.prio);
+    rebuildStorage(i, storageColumn4, onHoldListEl);
   }
   updateDOM();
 }
