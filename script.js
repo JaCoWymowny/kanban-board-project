@@ -2,11 +2,11 @@
 // Items
 let updatedOnLoad = false;
 
-let storageColumn1 = [];
-let storageColumn2 = [];
-let storageColumn3 = [];
-let storageColumn4 = [];
-let storageList = [];
+let backlogColumn = [];
+let inProgressColumn = [];
+let completeColumn = [];
+let onHoldColumn = [];
+let columnList = [];
 
 let labels = [
   {name: ""},
@@ -30,20 +30,20 @@ let currentColumn;
 
 // Get Arrays from localStorage if available, without default value
 function getSavedColumns() {
-  if (localStorage.getItem('storage1')) {
-    storageColumn1 = JSON.parse(localStorage.storage1);
-    storageColumn2 = JSON.parse(localStorage.storage2);
-    storageColumn3 = JSON.parse(localStorage.storage3);
-    storageColumn4 = JSON.parse(localStorage.storage4);
+  if (localStorage.getItem('backlogColumn')) {
+    backlogColumn = JSON.parse(localStorage.backlogColumn);
+    inProgressColumn = JSON.parse(localStorage.inProgressColumn);
+    completeColumn = JSON.parse(localStorage.completeColumn);
+    onHoldColumn = JSON.parse(localStorage.onHoldColumn);
   }
 }
 
 // Set localStorage Arrays
 function updateSavedColumns() {
-  storageList = [storageColumn1, storageColumn2, storageColumn3, storageColumn4];
-  const storageNames = ['1', '2', '3', '4'];
+  columnList = [backlogColumn, inProgressColumn, completeColumn, onHoldColumn];
+  const storageNames = ['backlog', 'inProgress', 'complete', 'onHold'];
   storageNames.forEach((storageName, index) => {
-    localStorage.setItem(`storage${storageName}`, JSON.stringify(storageList[index]));
+    localStorage.setItem(`${storageName}Column`, JSON.stringify(columnList[index]));
   });
 }
 
@@ -53,27 +53,27 @@ function filterArray(array) {
   return filteredArray;
 }
 
-function prioIcon() {
-  const awesomePrioIcon = document.querySelectorAll('.icon');
+function iconForCurrentTaskPriority() {
+  const awesomePriorityIcon = document.querySelectorAll('.icon');
 
-  awesomePrioIcon.forEach((liPrio) => {
-    if (liPrio.dataset.prio === "Low") {
-      liPrio.classList.add('fab');
-      liPrio.classList.add('fa-gripfire');
-      liPrio.classList.add('fa-2x');
-      liPrio.style.color = 'white';
+  awesomePriorityIcon.forEach((priorityElement) => {
+    if (priorityElement.dataset.prio === "Low") {
+      priorityElement.classList.add('fab');
+      priorityElement.classList.add('fa-gripfire');
+      priorityElement.classList.add('fa-2x');
+      priorityElement.style.color = 'white';
     }
-    if (liPrio.dataset.prio === "Mid") {
-      liPrio.classList.add('fab');
-      liPrio.classList.add('fa-gripfire');
-      liPrio.classList.add('fa-2x');
-      liPrio.style.color = 'yellow';
+    if (priorityElement.dataset.prio === "Mid") {
+      priorityElement.classList.add('fab');
+      priorityElement.classList.add('fa-gripfire');
+      priorityElement.classList.add('fa-2x');
+      priorityElement.style.color = 'yellow';
     }
-    if (liPrio.dataset.prio === "ASAP") {
-      liPrio.classList.add('fab');
-      liPrio.classList.add('fa-gripfire');
-      liPrio.classList.add('fa-2x');
-      liPrio.style.color = 'red';
+    if (priorityElement.dataset.prio === "ASAP") {
+      priorityElement.classList.add('fab');
+      priorityElement.classList.add('fa-gripfire');
+      priorityElement.classList.add('fa-2x');
+      priorityElement.style.color = 'red';
     }
   })
 }
@@ -83,43 +83,43 @@ function createItemEl(columnEl, column, index, item) {
   const listColumns = document.querySelectorAll('.drag-item-list');
   const shadowAfterBoxOpen = document.querySelector('.fullscreen');
   // List Item
-  const listEl = document.createElement('li');
-  const liText = document.createElement('p');
-  const liPrio =document.createElement('p');
+  const newTaskElement = document.createElement('li');
+  const liTextToCurrentTask = document.createElement('p');
+  const liPriorityOnCurrentTask =document.createElement('p');
 
-  liPrio.dataset.prio = item.priority;
-  liPrio.classList.add('icon');
-  liText.textContent = item.description;
-  liText.classList.add('text');
-  liText.setAttribute('ondragstart', 'drag(event)');
-  listEl.id = index;
-  listEl.dataset.worker = item.label;
-  listEl.dataset.prio = item.priority;
-  listEl.classList.add('drag-item');
-  listEl.draggable = true;
-  listEl.setAttribute('ondragstart', 'drag(event)');
-  listEl.addEventListener('click', function() {
+  liPriorityOnCurrentTask.dataset.prio = item.priority;
+  liPriorityOnCurrentTask.classList.add('icon');
+  liTextToCurrentTask.textContent = item.description;
+  liTextToCurrentTask.classList.add('text');
+  liTextToCurrentTask.setAttribute('ondragstart', 'drag(event)');
+  newTaskElement.id = index;
+  newTaskElement.dataset.worker = item.label;
+  newTaskElement.dataset.prio = item.priority;
+  newTaskElement.classList.add('drag-item');
+  newTaskElement.draggable = true;
+  newTaskElement.setAttribute('ondragstart', 'drag(event)');
+  newTaskElement.addEventListener('click', function() {
 
       // add event and show shadow on screen
       shadowAfterBoxOpen.removeAttribute("hidden");
       shadowAfterBoxOpen.onclick = function(e) {
         if (e.target) {
-          openTask.remove();
+          currentTaskWindow.remove();
           shadowAfterBoxOpen.setAttribute("hidden", true);
           rebuildArrays();
         }
       }
 
       // list item window
-      const openTask = document.createElement('div');
-      openTask.classList.add('modal');
-      openTask.classList.add('toggle-modal');
+      const currentTaskWindow = document.createElement('div');
+      currentTaskWindow.classList.add('modal');
+      currentTaskWindow.classList.add('toggle-modal');
 
-      const closeButtonX = document.createElement('button');
-      closeButtonX.classList.add('close-x');
-      closeButtonX.classList.add('toggle-x');
-      closeButtonX.addEventListener('click', function() {
-        openTask.remove();
+      const buttonForCloseTaskWindow = document.createElement('button');
+      buttonForCloseTaskWindow.classList.add('close-x');
+      buttonForCloseTaskWindow.classList.add('toggle-x');
+      buttonForCloseTaskWindow.addEventListener('click', function() {
+        currentTaskWindow.remove();
         shadowAfterBoxOpen.setAttribute("hidden", true);
         rebuildArrays();
       })
@@ -129,11 +129,11 @@ function createItemEl(columnEl, column, index, item) {
       awesomeIconX.classList.add('fa-times-circle');
       awesomeIconX.classList.add('fa-2x');
 
-      const openTaskText = document.createElement('span');
-      openTaskText.classList.add('add-item');
-      openTaskText.classList.add('first-style');
-      openTaskText.textContent = liText.textContent;
-      openTaskText.contentEditable = true;
+      const taskTextSpace = document.createElement('span');
+      taskTextSpace.classList.add('add-item');
+      taskTextSpace.classList.add('first-style');
+      taskTextSpace.textContent = liTextToCurrentTask.textContent;
+      taskTextSpace.contentEditable = true;
 
       //prevent empty text
       const validateWindow = document.createElement('div');
@@ -145,40 +145,41 @@ function createItemEl(columnEl, column, index, item) {
       validateSpan.style.display = 'none';
 
       const actuallyClickedListElement = listColumns[column].children;
-      const actuallyId = actuallyClickedListElement[index].id;
+      const actuallyCreatedElementId = actuallyClickedListElement[index].id;
+
       const editablePriorityWindow = document.createElement('div');
       editablePriorityWindow.classList.add('editable-priority-box')
 
-      const priorityStatus = document.createElement('div');
-      priorityStatus.classList.add('column-select')
+      const actuallyPriority = document.createElement('div');
+      actuallyPriority.classList.add('column-select')
       const priorityStatusText = document.createElement('span');
       priorityStatusText.textContent = 'Priority: ';
-      priorityStatusText.classList.add('temporary-color');
-      const tooglePriority = document.createElement('span');
-      tooglePriority.classList.add('choice-priority');
+      priorityStatusText.classList.add('temporary-color'); // color for this text
+      const clickablePrioritySpan = document.createElement('span');
+      clickablePrioritySpan.classList.add('choice-priority');
 
-      storageList[column].forEach((listElement, index) => {
+      columnList[column].forEach((listElement, index) => {
 
-        if (parseInt(actuallyId) === index) {
+        if (parseInt(actuallyCreatedElementId) === index) {
 
-          tooglePriority.textContent = listElement.priority;
+          clickablePrioritySpan.textContent = listElement.priority;
           if (listElement.priority === "") {
-            tooglePriority.textContent = "Open priority window";
+            clickablePrioritySpan.textContent = "Open priority window";
           }
-          if (tooglePriority.textContent === "Low") {
-            tooglePriority.style.color = 'white';
+          if (clickablePrioritySpan.textContent === "Low") {
+            clickablePrioritySpan.style.color = 'white';
           }
-          if (tooglePriority.textContent === "Mid") {
-            tooglePriority.style.color = 'yellow';
+          if (clickablePrioritySpan.textContent === "Mid") {
+            clickablePrioritySpan.style.color = 'yellow';
           }
-          if (tooglePriority.textContent === "ASAP") {
-            tooglePriority.style.color = 'red';
+          if (clickablePrioritySpan.textContent === "ASAP") {
+            clickablePrioritySpan.style.color = 'red';
           }
         }
       })
 
       // create choice to priority select menu
-      tooglePriority.addEventListener('click', function() {
+      clickablePrioritySpan.addEventListener('click', function() {
 
         const select = document.createElement('select');
         select.classList.add('priority-choice', 'select-menu');
@@ -203,37 +204,37 @@ function createItemEl(columnEl, column, index, item) {
             let editChoice = columnPriorityChoice[column].value;
 
             if (editChoice === "") {
-              tooglePriority.textContent = "Priority is not set";
-              tooglePriority.style.color = 'white';
+              clickablePrioritySpan.textContent = "Priority is not set";
+              clickablePrioritySpan.style.color = 'white';
             }
               else if (editChoice === "Low") {
-              tooglePriority.textContent = "Low";
-              tooglePriority.style.color = 'white';
+              clickablePrioritySpan.textContent = "Low";
+              clickablePrioritySpan.style.color = 'white';
             } else if (editChoice === "Mid") {
-              tooglePriority.textContent = "Mid";
-              tooglePriority.style.color = 'yellow';
+              clickablePrioritySpan.textContent = "Mid";
+              clickablePrioritySpan.style.color = 'yellow';
             } else if (editChoice === "ASAP") {
-              tooglePriority.textContent = "ASAP";
-              tooglePriority.style.color = 'red';
+              clickablePrioritySpan.textContent = "ASAP";
+              clickablePrioritySpan.style.color = 'red';
             }
           })
         })
       })
 
-      const responsibleUserBox = document.createElement('div');
-      responsibleUserBox.classList.add('column-select')
-      const responsibleUserValue = document.createElement('span');
-      responsibleUserValue.classList.add('temporary-color');
-      responsibleUserValue.textContent = 'Label: ';
+      const labelContainer = document.createElement('div');
+      labelContainer.classList.add('column-select')
+      const labelInformationSpan = document.createElement('span');
+      labelInformationSpan.classList.add('temporary-color'); // color for this text
+      labelInformationSpan.textContent = 'Label: ';
       const responsibleObjectChoice = document.createElement('span');
       responsibleObjectChoice.classList.add('choice-user');
-      responsibleObjectChoice.classList.add('temporary-color');
-      storageList[column].forEach((listElement, index) => {
-        if (parseInt(actuallyId) === index) {
+      responsibleObjectChoice.classList.add('temporary-color'); // color for this text
+      columnList[column].forEach((listElement, index) => {
+        if (parseInt(actuallyCreatedElementId) === index) {
           responsibleObjectChoice.textContent = listElement.label;
         }
       })
-
+      console.log(labelContainer);
       const boxForButtons = document.createElement('div');
       boxForButtons.className += 'button-container';
 
@@ -244,8 +245,8 @@ function createItemEl(columnEl, column, index, item) {
       deleteTaskButton.classList.add('columns-submit');
       deleteTaskButton.textContent = 'Delete Task';
       deleteTaskButton.addEventListener('click', function() {
-        listEl.remove();
-        openTask.remove();
+        newTaskElement.remove();
+        currentTaskWindow.remove();
         shadowAfterBoxOpen.setAttribute("hidden", true);
         rebuildArrays();
       });
@@ -255,7 +256,7 @@ function createItemEl(columnEl, column, index, item) {
       saveChangesButton.classList.add('columns-submit');
       saveChangesButton.textContent = 'Save Changes';
       saveChangesButton.addEventListener('click', function(e) {
-        if (openTaskText.textContent === "") {
+        if (taskTextSpace.textContent === "") {
           validateSpan.style.display = 'block';
           setTimeout(function() {
             validateSpan.style.display = 'none';
@@ -263,36 +264,36 @@ function createItemEl(columnEl, column, index, item) {
           return
         }
 
-        liText.textContent = openTaskText.textContent;
-        listEl.dataset.prio = tooglePriority.textContent;
-        if (listEl.dataset.prio === "Priority is not set") {
-          listEl.dataset.prio = "";
+        liTextToCurrentTask.textContent = taskTextSpace.textContent;
+        newTaskElement.dataset.prio = clickablePrioritySpan.textContent;
+        if (newTaskElement.dataset.prio === "Priority is not set") {
+          newTaskElement.dataset.prio = "";
         }
-        openTask.remove();
+        currentTaskWindow.remove();
         shadowAfterBoxOpen.setAttribute("hidden", true);
         rebuildArrays();
       })
 
       // append new task window to website
-      closeButtonX.appendChild(awesomeIconX);
-      openTask.appendChild(closeButtonX);
-      openTask.appendChild(openTaskText);
+      buttonForCloseTaskWindow.appendChild(awesomeIconX);
+      currentTaskWindow.appendChild(buttonForCloseTaskWindow);
+      currentTaskWindow.appendChild(taskTextSpace);
       validateWindow.appendChild(validateSpan);
-      openTask.appendChild(validateWindow);
-      priorityStatus.append(priorityStatusText, tooglePriority);
-      openTask.appendChild(priorityStatus);
-      openTask.appendChild(editablePriorityWindow);
-      responsibleUserBox.append(responsibleUserValue, responsibleObjectChoice);
-      openTask.appendChild(responsibleUserBox);
+      currentTaskWindow.appendChild(validateWindow);
+      actuallyPriority.append(priorityStatusText, clickablePrioritySpan);
+      currentTaskWindow.appendChild(actuallyPriority);
+      currentTaskWindow.appendChild(editablePriorityWindow);
+      labelContainer.append(labelInformationSpan, responsibleObjectChoice);
+      currentTaskWindow.appendChild(labelContainer);
       boxForButtons.append(deleteTaskButton, saveChangesButton);
-      openTask.appendChild(boxForButtons);
-      columnEl.appendChild(openTask);
+      currentTaskWindow.appendChild(boxForButtons);
+      columnEl.appendChild(currentTaskWindow);
   })
   // Append
-  listEl.appendChild(liText);
-  listEl.appendChild(liPrio);
-  columnEl.appendChild(listEl);
-  prioIcon();
+  newTaskElement.appendChild(liTextToCurrentTask);
+  newTaskElement.appendChild(liPriorityOnCurrentTask);
+  columnEl.appendChild(newTaskElement);
+  iconForCurrentTaskPriority();
 }
 
 function createElementOnCurrentColumn(listEl, storageColumn, column) {
@@ -315,21 +316,21 @@ function updateDOM() {
   }
 
   // Backlog Column
-  createElementOnCurrentColumn(backlogListEl, storageColumn1, 0);
-  storageColumn1 = filterArray(storageColumn1);
+  createElementOnCurrentColumn(backlogListEl, backlogColumn, 0);
+  backlogColumn = filterArray(backlogColumn);
 
   // Progress Column
-  createElementOnCurrentColumn(progressListEl, storageColumn2, 1);
-  storageColumn2 = filterArray(storageColumn2);
+  createElementOnCurrentColumn(progressListEl, inProgressColumn, 1);
+  inProgressColumn = filterArray(inProgressColumn);
 
   // Complete Column
-  createElementOnCurrentColumn(completeListEl, storageColumn3, 2);
-  storageColumn3 = filterArray(storageColumn3);
+  createElementOnCurrentColumn(completeListEl, completeColumn, 2);
+  completeColumn = filterArray(completeColumn);
 
 
   // On Hold Column
-  createElementOnCurrentColumn(onHoldListEl, storageColumn4, 3);
-  storageColumn4 = filterArray(storageColumn4);
+  createElementOnCurrentColumn(onHoldListEl, onHoldColumn, 3);
+  onHoldColumn = filterArray(onHoldColumn);
 
   // Don't run more than once, Update Local Storage
   updatedOnLoad = true;
@@ -436,7 +437,7 @@ function hideInputBox(column) {
     if (indexing === column) {
       if (addItemTextField[column].textContent !== "") {
 
-        const storage = {
+        const taskData = {
           label: userLabel[column].options[userLabel[column].selectedIndex].text,
           priority: priorityChoice[column].options[priorityChoice[column].selectedIndex].text,
           description: addItems[column].textContent
@@ -450,9 +451,9 @@ function hideInputBox(column) {
         shadowAfterBoxOpen.setAttribute("hidden", true);
 
 
-        const selectedStorageList = storageList[column];
+        const selectedStorageList = columnList[column];
 
-        selectedStorageList.push(storage);
+        selectedStorageList.push(taskData);
 
         addItems[column].textContent = '';
 
@@ -468,12 +469,12 @@ function hideInputBox(column) {
 }
 
 function rebuildStorage(index, storageColumn, listEl) {
-  const storage = {
+  const taskData = {
     description: listEl.children[index].firstElementChild.textContent,
     label: listEl.children[index].dataset.worker,
     priority: listEl.children[index].dataset.prio
   }
-  storageColumn.push(storage);
+  storageColumn.push(taskData);
 }
 
 // Allows arrays to reflect Drag and Drop items
@@ -483,25 +484,25 @@ function rebuildArrays() {
   const completeListEl = document.getElementById('complete-list');
   const onHoldListEl = document.getElementById('on-hold-list');
 
-  storageColumn1 = [];
-  storageColumn2 = [];
-  storageColumn3 = [];
-  storageColumn4 = [];
+  backlogColumn = [];
+  inProgressColumn = [];
+  completeColumn = [];
+  onHoldColumn = [];
 
   for (let i = 0; i < backlogListEl.children.length; i++) {
-     rebuildStorage(i, storageColumn1, backlogListEl);
+     rebuildStorage(i, backlogColumn, backlogListEl);
   }
 
   for (let i = 0; i < progressListEl.children.length; i++) {
-    rebuildStorage(i, storageColumn2, progressListEl);
+    rebuildStorage(i, inProgressColumn, progressListEl);
   }
 
   for (let i = 0; i < completeListEl.children.length; i++) {
-    rebuildStorage(i, storageColumn3,completeListEl);
+    rebuildStorage(i, completeColumn,completeListEl);
   }
 
   for (let i = 0; i < onHoldListEl.children.length; i++) {
-    rebuildStorage(i, storageColumn4, onHoldListEl);
+    rebuildStorage(i, onHoldColumn, onHoldListEl);
   }
   updateDOM();
 }

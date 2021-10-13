@@ -62,8 +62,8 @@ function htmlTreeBranches() {
     columnContentList.setAttribute('ondragover', `allowDrop(event)`);
     columnContentList.setAttribute('ondragenter', `dragEnter(${index})`);
 
-    const columnAddButton = document.createElement('div');
-    columnAddButton.classList.add('add-btn-group');
+    const addToColumnButton = document.createElement('div');
+    addToColumnButton.classList.add('add-btn-group');
     const addButtonBox = document.createElement('div');
     addButtonBox.classList.add('add-btn');
     addButtonBox.setAttribute('onclick', `showInputBox(${index})`);
@@ -123,8 +123,8 @@ function htmlTreeBranches() {
     columnContent.append(columnContentList);
     el.append(columnContent);
     addButtonBox.append(plusSpan, plusText);
-    columnAddButton.append(addButtonBox);
-    el.append(columnAddButton);
+    addToColumnButton.append(addButtonBox);
+    el.append(addToColumnButton);
 
     closeButtonX.append(awesomeIconX);
     addModal.append(closeButtonX);
