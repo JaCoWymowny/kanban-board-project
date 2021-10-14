@@ -9,13 +9,13 @@ let onHoldColumn = [];
 let columnList = [];
 
 let labels = [
-  {name: ""},
+  {name: "-"},
   {name: 'Front-end'},
   {name: 'Back-end'}
 ];
 
 let priority = [
-  {name: ""},
+  {name: "-"},
   {name: 'Low'},
   {name: 'Mid'},
   {name: 'ASAP'}
@@ -53,32 +53,30 @@ function filterArray(array) {
   return filteredArray;
 }
 
+// move that function and other similar to new file: helpers.js
+function addIconsStyles(element, color) {
+    element.classList.add('fab');
+    element.classList.add('fa-gripfire');
+    element.classList.add('fa-2x');
+    element.style.color = color;
+}
+
 function iconForCurrentTaskPriority() {
   const awesomePriorityIcon = document.querySelectorAll('.icon');
 
   awesomePriorityIcon.forEach((priorityElement) => {
     if (priorityElement.dataset.prio === "Low") {
-      priorityElement.classList.add('fab');
-      priorityElement.classList.add('fa-gripfire');
-      priorityElement.classList.add('fa-2x');
-      priorityElement.style.color = 'white';
+      addIconsStyles(priorityElement, 'white');
     }
     if (priorityElement.dataset.prio === "Mid") {
-      priorityElement.classList.add('fab');
-      priorityElement.classList.add('fa-gripfire');
-      priorityElement.classList.add('fa-2x');
-      priorityElement.style.color = 'yellow';
+        addIconsStyles(priorityElement, 'yellow');
     }
     if (priorityElement.dataset.prio === "ASAP") {
-      priorityElement.classList.add('fab');
-      priorityElement.classList.add('fa-gripfire');
-      priorityElement.classList.add('fa-2x');
-      priorityElement.style.color = 'red';
+        addIconsStyles(priorityElement, 'red');
     }
   })
 }
 
-// Create DOM Elements for each list item
 function createItemEl(columnEl, column, index, item) {
   const listColumns = document.querySelectorAll('.drag-item-list');
   const shadowAfterBoxOpen = document.querySelector('.fullscreen');
@@ -148,7 +146,7 @@ function createItemEl(columnEl, column, index, item) {
       const actuallyCreatedElementId = actuallyClickedListElement[index].id;
 
       const editablePriorityWindow = document.createElement('div');
-      editablePriorityWindow.classList.add('editable-priority-box')
+      editablePriorityWindow.classList.add('editable-priority-box');
 
       const actuallyPriority = document.createElement('div');
       actuallyPriority.classList.add('column-select')
@@ -181,8 +179,15 @@ function createItemEl(columnEl, column, index, item) {
       // create choice to priority select menu
       clickablePrioritySpan.addEventListener('click', function() {
 
+          const selectMenu = document.querySelector('.valid-select');
+
+          if (selectMenu) {
+                return;
+          }
+
         const select = document.createElement('select');
-        select.classList.add('priority-choice', 'select-menu');
+        select.classList.add('priority-choice', 'select-menu', 'valid-select');
+
         editablePriorityWindow.appendChild(select);
 
         const columnPriorityChoice = document.querySelectorAll('.priority-choice');
@@ -190,7 +195,7 @@ function createItemEl(columnEl, column, index, item) {
         unselectable.text = "Change Priority";
         unselectable.disabled = true;
         columnPriorityChoice[column].add(unselectable);
-        priority.forEach(function(items) {
+        priority.forEach((items) => {
           if (columnPriorityChoice[column].length < 5) {
             const priorityOption = document.createElement('option');
 
@@ -335,21 +340,6 @@ function updateDOM() {
   // Don't run more than once, Update Local Storage
   updatedOnLoad = true;
   updateSavedColumns();
-}
-
-// Update Item - Delete if necessary, or update Array value
-function updateItem(id, column) {
-  const listColumns = document.querySelectorAll('.drag-item-list');
-  const selectedArray = listArrays[column];
-  const selectedColumn = listColumns[column].children;
-  if (!dragging) {
-    if (!selectedColumn[id].textContent) {
-      delete selectedArray[id];
-    } else {
-      selectedArray[id] = selectedColumn[id].textContent;
-    }
-    updateDOM();
-  }
 }
 
 function UserListToTask(column) {
