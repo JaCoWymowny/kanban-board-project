@@ -53,16 +53,9 @@ function filterArray(array) {
   return filteredArray;
 }
 
-// move that function and other similar to new file: helpers.js
-function addIconsStyles(element, color) {
-    element.classList.add('fab');
-    element.classList.add('fa-gripfire');
-    element.classList.add('fa-2x');
-    element.style.color = color;
-}
 
 function iconForCurrentTaskPriority() {
-  const awesomePriorityIcon = document.querySelectorAll('.icon');
+  const awesomePriorityIcon = document.querySelectorAll('.iconX');
 
   awesomePriorityIcon.forEach((priorityElement) => {
     if (priorityElement.dataset.prio === "Low") {
@@ -81,22 +74,27 @@ function createItemEl(columnEl, column, index, item) {
   const listColumns = document.querySelectorAll('.drag-item-list');
   const shadowAfterBoxOpen = document.querySelector('.fullscreen');
   // List Item
-  const newTaskElement = document.createElement('li');
+  const task = document.createElement('li');
   const liTextToCurrentTask = document.createElement('p');
   const liPriorityOnCurrentTask =document.createElement('p');
 
   liPriorityOnCurrentTask.dataset.prio = item.priority;
-  liPriorityOnCurrentTask.classList.add('icon');
+  liPriorityOnCurrentTask.classList.add('iconX');
   liTextToCurrentTask.textContent = item.description;
   liTextToCurrentTask.classList.add('text');
   liTextToCurrentTask.setAttribute('ondragstart', 'drag(event)');
-  newTaskElement.id = index;
-  newTaskElement.dataset.worker = item.label;
-  newTaskElement.dataset.prio = item.priority;
-  newTaskElement.classList.add('drag-item');
-  newTaskElement.draggable = true;
-  newTaskElement.setAttribute('ondragstart', 'drag(event)');
-  newTaskElement.addEventListener('click', function() {
+
+    const taskAttributes = {
+        id: index,
+        label: item.label,
+        priority: item.priority,
+        newClass: `drag-item`,
+        dragging: true
+    }
+
+  addAttributesToTask(task, taskAttributes);
+
+  task.addEventListener('click', function() {
 
       // add event and show shadow on screen
       shadowAfterBoxOpen.removeAttribute("hidden");
@@ -122,10 +120,7 @@ function createItemEl(columnEl, column, index, item) {
         rebuildArrays();
       })
 
-      const awesomeIconX = document.createElement('i');
-      awesomeIconX.classList.add('far');
-      awesomeIconX.classList.add('fa-times-circle');
-      awesomeIconX.classList.add('fa-2x');
+      const iconX = createXIcon(document);
 
       const taskTextSpace = document.createElement('span');
       taskTextSpace.classList.add('add-item');
@@ -239,27 +234,26 @@ function createItemEl(columnEl, column, index, item) {
           responsibleObjectChoice.textContent = listElement.label;
         }
       })
-      console.log(labelContainer);
+
       const boxForButtons = document.createElement('div');
       boxForButtons.className += 'button-container';
 
-// delete task from our list
+      // delete task from our list
       const deleteTaskButton = document.createElement('span');
-      const saveChangesButton = document.createElement('span');
-      deleteTaskButton.classList.add("interract-button");
-      deleteTaskButton.classList.add('columns-submit');
-      deleteTaskButton.textContent = 'Delete Task';
+      createTaskButton(deleteTaskButton, `interact-button`, `columns-submit`, `Delete Task`);
+
       deleteTaskButton.addEventListener('click', function() {
-        newTaskElement.remove();
+        task.remove();
         currentTaskWindow.remove();
         shadowAfterBoxOpen.setAttribute("hidden", true);
         rebuildArrays();
       });
 
       // save our task after create or edited
-      saveChangesButton.classList.add('interract-button');
-      saveChangesButton.classList.add('columns-submit');
-      saveChangesButton.textContent = 'Save Changes';
+      const saveChangesButton = document.createElement('span');
+      createTaskButton(saveChangesButton, `interact-button`, `columns-submit`, "Save Changes");
+
+
       saveChangesButton.addEventListener('click', function(e) {
         if (taskTextSpace.textContent === "") {
           validateSpan.style.display = 'block';
@@ -270,9 +264,9 @@ function createItemEl(columnEl, column, index, item) {
         }
 
         liTextToCurrentTask.textContent = taskTextSpace.textContent;
-        newTaskElement.dataset.prio = clickablePrioritySpan.textContent;
-        if (newTaskElement.dataset.prio === "Priority is not set") {
-          newTaskElement.dataset.prio = "";
+        task.dataset.prio = clickablePrioritySpan.textContent;
+        if (task.dataset.prio === "Priority is not set") {
+          task.dataset.prio = "";
         }
         currentTaskWindow.remove();
         shadowAfterBoxOpen.setAttribute("hidden", true);
@@ -280,7 +274,7 @@ function createItemEl(columnEl, column, index, item) {
       })
 
       // append new task window to website
-      buttonForCloseTaskWindow.appendChild(awesomeIconX);
+      buttonForCloseTaskWindow.appendChild(iconX);
       currentTaskWindow.appendChild(buttonForCloseTaskWindow);
       currentTaskWindow.appendChild(taskTextSpace);
       validateWindow.appendChild(validateSpan);
@@ -295,17 +289,10 @@ function createItemEl(columnEl, column, index, item) {
       columnEl.appendChild(currentTaskWindow);
   })
   // Append
-  newTaskElement.appendChild(liTextToCurrentTask);
-  newTaskElement.appendChild(liPriorityOnCurrentTask);
-  columnEl.appendChild(newTaskElement);
+  task.appendChild(liTextToCurrentTask);
+  task.appendChild(liPriorityOnCurrentTask);
+  columnEl.appendChild(task);
   iconForCurrentTaskPriority();
-}
-
-function createElementOnCurrentColumn(listEl, storageColumn, column) {
-  listEl.textContent = '';
-  storageColumn.forEach((item, index) => {
-    createItemEl(listEl, column, index, item);
-  });
 }
 
 // Update Columns in DOM - Reset HTML, Filter Array, Update localStorage
@@ -399,10 +386,10 @@ function showInputBox(column) {
 function closeInputBox(column) {
   const columnsModal = document.querySelectorAll('.columns-modal');
   const addItemTextField = document.querySelectorAll('.validate');
-  const awesomeIconX = document.querySelectorAll('.close-x');
+  const iconX = document.querySelectorAll('.close-x');
   const shadowAfterBoxOpen = document.querySelector('.fullscreen');
 
-  awesomeIconX.forEach((x, index) => {
+    iconX.forEach((x, index) => {
     if (index === column) {
       addItemTextField[column].textContent = "";
       columnsModal[column].style.display = 'none';
@@ -456,15 +443,6 @@ function hideInputBox(column) {
       }
     }
   })
-}
-
-function rebuildStorage(index, storageColumn, listEl) {
-  const taskData = {
-    description: listEl.children[index].firstElementChild.textContent,
-    label: listEl.children[index].dataset.worker,
-    priority: listEl.children[index].dataset.prio
-  }
-  storageColumn.push(taskData);
 }
 
 // Allows arrays to reflect Drag and Drop items

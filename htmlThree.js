@@ -1,6 +1,5 @@
 const dragList = document.querySelector('.drag-list');
 
-
 // lists + all columns for items
 function htmlTree() {
 
@@ -16,21 +15,17 @@ function htmlTree() {
 
   // add four column to drag-container div
   const firstColumn = document.createElement('li');
-  firstColumn.classList.add('drag-column');
-  firstColumn.classList.add('backlog-column');
-  firstColumn.setAttribute('id', '0');
+  allColumnAttribute(firstColumn, `drag-column`, `backlog-column`, 0);
+
   const secondColumn = document.createElement('li');
-  secondColumn.classList.add('drag-column');
-  secondColumn.classList.add('progress-column');
-  secondColumn.setAttribute('id', '1');
+  allColumnAttribute(secondColumn, `drag-column`, `progress-column`, 1);
+
   const thirdColumn = document.createElement('li');
-  thirdColumn.classList.add('drag-column');
-  thirdColumn.classList.add('complete-column');
-  thirdColumn.setAttribute('id', '2');
+  allColumnAttribute(thirdColumn, `drag-column`, `complete-column`, 2);
+
   const fourthColumn = document.createElement('li');
-  fourthColumn.classList.add('drag-column');
-  fourthColumn.classList.add('on-hold-column');
-  fourthColumn.setAttribute('id', '3');
+  allColumnAttribute(fourthColumn, `drag-column`, `on-hold-column`, 3);
+
 
   dragList.insertBefore(fourthColumn, dragList.firstChild);
   dragList.insertBefore(thirdColumn, dragList.firstChild);
