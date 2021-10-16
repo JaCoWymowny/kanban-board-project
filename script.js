@@ -122,6 +122,11 @@ function createItemEl(columnEl, column, index, item) {
 
       const iconX = createXIcon(document);
 
+      const tittleWindow = document.createElement('span');
+      tittleWindow.classList.add('tittle-window');
+      tittleWindow.classList.add('first-style');
+      tittleWindow.contentEditable = true;
+
       const taskTextSpace = document.createElement('span');
       taskTextSpace.classList.add('add-item');
       taskTextSpace.classList.add('first-style');
@@ -276,6 +281,7 @@ function createItemEl(columnEl, column, index, item) {
       // append new task window to website
       buttonForCloseTaskWindow.appendChild(iconX);
       currentTaskWindow.appendChild(buttonForCloseTaskWindow);
+      currentTaskWindow.appendChild(tittleWindow);
       currentTaskWindow.appendChild(taskTextSpace);
       validateWindow.appendChild(validateSpan);
       currentTaskWindow.appendChild(validateWindow);

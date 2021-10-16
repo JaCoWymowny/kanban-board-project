@@ -79,6 +79,12 @@ function htmlTreeBranches() {
     awesomeIconX.classList.add('far');
     awesomeIconX.classList.add('fa-times-circle');
     awesomeIconX.classList.add('fa-2x');
+
+    const tittleWindow = document.createElement('span');
+    tittleWindow.classList.add('tittle-window');
+
+    tittleWindow.contentEditable = true;
+
     const addItemModal = document.createElement('span');
     addItemModal.classList.add('add-item');
     addItemModal.classList.add('validate');
@@ -123,6 +129,7 @@ function htmlTreeBranches() {
 
     closeButtonX.append(awesomeIconX);
     addModal.append(closeButtonX);
+    addModal.append(tittleWindow);
     addModal.append(addItemModal);
     validateWindow.append(validateSpan);
     addModal.append(validateWindow);
