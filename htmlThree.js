@@ -80,11 +80,13 @@ function htmlTreeBranches() {
     awesomeIconX.classList.add('fa-times-circle');
     awesomeIconX.classList.add('fa-2x');
 
-    const tittleWindow = document.createElement('span');
-    tittleWindow.classList.add('tittle-window');
+    const tittleContainer = containerForTittleElement(document);
+    const firstModalSpecification = addSpecificationToModal(document, `Tittle`);
+    const tittleWindow = addTittleToModal(document);
 
-    tittleWindow.contentEditable = true;
-
+    const taskTextContainer = document.createElement(`div`);
+    taskTextContainer.classList.add(`text-container`);
+    const secondModalSpecification = addSpecificationToModal(document, `Task Specification:`);
     const addItemModal = document.createElement('span');
     addItemModal.classList.add('add-item');
     addItemModal.classList.add('validate');
@@ -129,8 +131,10 @@ function htmlTreeBranches() {
 
     closeButtonX.append(awesomeIconX);
     addModal.append(closeButtonX);
-    addModal.append(tittleWindow);
-    addModal.append(addItemModal);
+    tittleContainer.append(firstModalSpecification, tittleWindow);
+    addModal.appendChild(tittleContainer);
+    taskTextContainer.append(secondModalSpecification, addItemModal);
+    addModal.append(taskTextContainer);
     validateWindow.append(validateSpan);
     addModal.append(validateWindow);
     modalSelectBoxPriority.append(prioritySpan, selectPrio);

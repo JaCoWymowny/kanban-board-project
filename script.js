@@ -122,11 +122,13 @@ function createItemEl(columnEl, column, index, item) {
 
       const iconX = createXIcon(document);
 
-      const tittleWindow = document.createElement('span');
-      tittleWindow.classList.add('tittle-window');
-      tittleWindow.classList.add('first-style');
-      tittleWindow.contentEditable = true;
+      const tittleContainer = containerForTittleElement(document);
+      const firstModalSpecification = addSpecificationToModal(document, `Tittle:`);
+      const tittleWindow = addTittleToModal(document);
 
+      const taskTextContainer = document.createElement(`div`);
+      taskTextContainer.classList.add(`text-container`);
+      const secondModalSpecification = addSpecificationToModal(document, `Task Specification:`);
       const taskTextSpace = document.createElement('span');
       taskTextSpace.classList.add('add-item');
       taskTextSpace.classList.add('first-style');
@@ -281,8 +283,10 @@ function createItemEl(columnEl, column, index, item) {
       // append new task window to website
       buttonForCloseTaskWindow.appendChild(iconX);
       currentTaskWindow.appendChild(buttonForCloseTaskWindow);
-      currentTaskWindow.appendChild(tittleWindow);
-      currentTaskWindow.appendChild(taskTextSpace);
+      tittleContainer.append(firstModalSpecification, tittleWindow);
+      currentTaskWindow.appendChild(tittleContainer);
+      taskTextContainer.append(secondModalSpecification, taskTextSpace);
+      currentTaskWindow.appendChild(taskTextContainer);
       validateWindow.appendChild(validateSpan);
       currentTaskWindow.appendChild(validateWindow);
       actuallyPriority.append(priorityStatusText, clickablePrioritySpan);

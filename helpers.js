@@ -49,6 +49,7 @@ function createTaskButton(element, firstClass, secondClass, text) {
     element.textContent = text;
 }
 
+// create x icon to create item
 function createXIcon(document) {
     const icon = document.createElement(`i`);
     icon.classList.add(`far`);
@@ -56,3 +57,27 @@ function createXIcon(document) {
     icon.classList.add(`fa-2x`);
     return icon
 }
+
+function containerForTittleElement(document) {
+    const container = document.createElement(`div`);
+    container.classList.add(`tittle-container`);
+    return container
+}
+
+function addTittleToModal(document) {
+    const tittle = document.createElement('span');
+    tittle.classList.add('tittle-window');
+    tittle.classList.add('first-style');
+    tittle.contentEditable = true;
+    return tittle
+}
+
+function addSpecificationToModal(document,content) {
+    const text = document.createElement('span');
+    text.classList.add(`first-style`);
+    text.textContent = content;
+    return text
+}
+
+
+
