@@ -190,16 +190,17 @@ function createItemEl(columnEl, column, index, item) {
 
       // create choice to priority select menu
       clickablePrioritySpan.addEventListener('click', function() {
-
+          dropDownIcon.remove();
           const selectMenu = document.querySelector('.valid-select');
 
           if (selectMenu) {
                 return;
           }
 
+
         const select = document.createElement('select');
         select.classList.add('priority-choice', 'select-menu', 'valid-select');
-        dropDownIcon.remove();
+
         editablePriorityWindow.appendChild(select);
 
         const columnPriorityChoice = document.querySelectorAll('.priority-choice');
@@ -224,13 +225,13 @@ function createItemEl(columnEl, column, index, item) {
               clickablePrioritySpan.textContent = "Priority is not set ";
               clickablePrioritySpan.style.color = 'white';
             }
-              else if (editChoice === "Low ") {
+              else if (editChoice === "Low") {
               clickablePrioritySpan.textContent = "Low";
               clickablePrioritySpan.style.color = 'white';
-            } else if (editChoice === "Mid ") {
+            } else if (editChoice === "Mid") {
               clickablePrioritySpan.textContent = "Mid";
               clickablePrioritySpan.style.color = 'yellow';
-            } else if (editChoice === "ASAP ") {
+            } else if (editChoice === "ASAP") {
               clickablePrioritySpan.textContent = "ASAP";
               clickablePrioritySpan.style.color = 'red';
             }
