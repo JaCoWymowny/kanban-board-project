@@ -78,6 +78,10 @@ body {
   font-size: 21px;
 }
 
+.dropdown-icon {
+  margin-left: 10px;
+}
+
 .choice-priority:hover {
   font-weight: bolder;
 }
@@ -393,7 +397,7 @@ ul {
 .tittle-window {
   min-height: 30px;
   height: auto;
-  max-width: 75%;
+  max-width: 100%;
   width: 100%;
   background-color: white;
   border-radius: 10px;
@@ -667,7 +671,7 @@ ul {
     top: 25%;
     right: 10%;
     height: 60%;
-    left: 4%;
+    left: 3%;
   }
 
   .close-x {

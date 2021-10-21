@@ -25,10 +25,12 @@ function createElementOnCurrentColumn(listEl, storageColumn, column) {
 // helper for rebuildArray after save changes
 function rebuildStorage(index, storageColumn, listEl) {
     const taskData = {
-        description: listEl.children[index].firstElementChild.textContent,
+        description: listEl.children[index].lastElementChild.textContent,
         label: listEl.children[index].dataset.worker,
-        priority: listEl.children[index].dataset.prio
+        priority: listEl.children[index].dataset.prio,
+        tittle: listEl.children[index].firstElementChild.textContent
     }
+    console.log(taskData.tittle);
     storageColumn.push(taskData);
 }
 
@@ -39,6 +41,7 @@ function addAttributesToTask(element, taskAttributes) {
     element.dataset.prio = taskAttributes.priority;
     element.classList.add(taskAttributes.newClass);
     element.draggable = taskAttributes.dragging;
+    element.dataset.tittle = taskAttributes.tittle;
     element.setAttribute(`ondragstart`, `drag(event)`);
 }
 
@@ -64,11 +67,12 @@ function containerForTittleElement(document) {
     return container
 }
 
-function addTittleToModal(document) {
+function addTittleToModal(document, task) {
     const tittle = document.createElement('span');
     tittle.classList.add('tittle-window');
     tittle.classList.add('first-style');
     tittle.contentEditable = true;
+    tittle.textContent = task;
     return tittle
 }
 

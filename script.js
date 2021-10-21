@@ -77,17 +77,22 @@ function createItemEl(columnEl, column, index, item) {
   const task = document.createElement('li');
   const liTextToCurrentTask = document.createElement('p');
   const liPriorityOnCurrentTask =document.createElement('p');
+  const tittle = document.createElement(`p`);
+  tittle.classList.add('tittle');
 
   liPriorityOnCurrentTask.dataset.prio = item.priority;
   liPriorityOnCurrentTask.classList.add('iconX');
   liTextToCurrentTask.textContent = item.description;
+  liTextToCurrentTask.hidden = true;
   liTextToCurrentTask.classList.add('text');
-  liTextToCurrentTask.setAttribute('ondragstart', 'drag(event)');
+  tittle.textContent = item.tittle;
 
     const taskAttributes = {
         id: index,
         label: item.label,
         priority: item.priority,
+        tittle: item.tittle,
+        description: item.description,
         newClass: `drag-item`,
         dragging: true
     }
@@ -124,7 +129,8 @@ function createItemEl(columnEl, column, index, item) {
 
       const tittleContainer = containerForTittleElement(document);
       const firstModalSpecification = addSpecificationToModal(document, `Tittle:`);
-      const tittleWindow = addTittleToModal(document);
+      const tittleWindow = addTittleToModal(document, tittle.textContent);
+
 
       const taskTextContainer = document.createElement(`div`);
       taskTextContainer.classList.add(`text-container`);
@@ -157,6 +163,10 @@ function createItemEl(columnEl, column, index, item) {
       priorityStatusText.classList.add('temporary-color'); // color for this text
       const clickablePrioritySpan = document.createElement('span');
       clickablePrioritySpan.classList.add('choice-priority');
+      const dropDownIcon = document.createElement(`i`);
+      dropDownIcon.classList.add(`fas`);
+      dropDownIcon.classList.add(`fa-caret-down`);
+      dropDownIcon.classList.add(`dropdown-icon`);
 
       columnList[column].forEach((listElement, index) => {
 
@@ -189,7 +199,7 @@ function createItemEl(columnEl, column, index, item) {
 
         const select = document.createElement('select');
         select.classList.add('priority-choice', 'select-menu', 'valid-select');
-
+        dropDownIcon.remove();
         editablePriorityWindow.appendChild(select);
 
         const columnPriorityChoice = document.querySelectorAll('.priority-choice');
@@ -211,16 +221,16 @@ function createItemEl(columnEl, column, index, item) {
             let editChoice = columnPriorityChoice[column].value;
 
             if (editChoice === "") {
-              clickablePrioritySpan.textContent = "Priority is not set";
+              clickablePrioritySpan.textContent = "Priority is not set ";
               clickablePrioritySpan.style.color = 'white';
             }
-              else if (editChoice === "Low") {
+              else if (editChoice === "Low ") {
               clickablePrioritySpan.textContent = "Low";
               clickablePrioritySpan.style.color = 'white';
-            } else if (editChoice === "Mid") {
+            } else if (editChoice === "Mid ") {
               clickablePrioritySpan.textContent = "Mid";
               clickablePrioritySpan.style.color = 'yellow';
-            } else if (editChoice === "ASAP") {
+            } else if (editChoice === "ASAP ") {
               clickablePrioritySpan.textContent = "ASAP";
               clickablePrioritySpan.style.color = 'red';
             }
@@ -262,7 +272,8 @@ function createItemEl(columnEl, column, index, item) {
 
 
       saveChangesButton.addEventListener('click', function(e) {
-        if (taskTextSpace.textContent === "") {
+
+        if (taskTextSpace.textContent === "" || tittleWindow.textContent === "") {
           validateSpan.style.display = 'block';
           setTimeout(function() {
             validateSpan.style.display = 'none';
@@ -272,6 +283,8 @@ function createItemEl(columnEl, column, index, item) {
 
         liTextToCurrentTask.textContent = taskTextSpace.textContent;
         task.dataset.prio = clickablePrioritySpan.textContent;
+        tittle.textContent = tittleWindow.textContent;
+
         if (task.dataset.prio === "Priority is not set") {
           task.dataset.prio = "";
         }
@@ -290,6 +303,7 @@ function createItemEl(columnEl, column, index, item) {
       validateWindow.appendChild(validateSpan);
       currentTaskWindow.appendChild(validateWindow);
       actuallyPriority.append(priorityStatusText, clickablePrioritySpan);
+      clickablePrioritySpan.appendChild(dropDownIcon);
       currentTaskWindow.appendChild(actuallyPriority);
       currentTaskWindow.appendChild(editablePriorityWindow);
       labelContainer.append(labelInformationSpan, responsibleObjectChoice);
@@ -299,8 +313,9 @@ function createItemEl(columnEl, column, index, item) {
       columnEl.appendChild(currentTaskWindow);
   })
   // Append
-  task.appendChild(liTextToCurrentTask);
+  task.appendChild(tittle);
   task.appendChild(liPriorityOnCurrentTask);
+  task.appendChild(liTextToCurrentTask);
   columnEl.appendChild(task);
   iconForCurrentTaskPriority();
 }
@@ -378,6 +393,7 @@ function showInputBox(column) {
     const validationText = document.querySelectorAll('.valid-text');
     const addItemTextField = document.querySelectorAll('.validate');
     const shadowAfterBoxOpen = document.querySelector('.fullscreen');
+    const tittleWindow = document.querySelectorAll(`.tittle-window`);
 
     validationText[column].style.display = 'none';
     columnsModal[column].style.display = 'flex';
@@ -386,6 +402,7 @@ function showInputBox(column) {
       if (e.target) {
         shadowAfterBoxOpen.setAttribute("hidden", true);
         addItemTextField[column].textContent = "";
+        tittleWindow[column].textContent = "";
         columnsModal[column].style.display = 'none';
         resetChoice();
       }
@@ -398,10 +415,12 @@ function closeInputBox(column) {
   const addItemTextField = document.querySelectorAll('.validate');
   const iconX = document.querySelectorAll('.close-x');
   const shadowAfterBoxOpen = document.querySelector('.fullscreen');
+  const tittleWindow = document.querySelectorAll(`.tittle-window`);
 
     iconX.forEach((x, index) => {
     if (index === column) {
       addItemTextField[column].textContent = "";
+      tittleWindow[column].textContent = "";
       columnsModal[column].style.display = 'none';
       shadowAfterBoxOpen.setAttribute("hidden", true);
       resetChoice();
@@ -419,15 +438,17 @@ function hideInputBox(column) {
   const addItemTextField = document.querySelectorAll('.validate');
   const validationText = document.querySelectorAll('.valid-text');
   const shadowAfterBoxOpen = document.querySelector('.fullscreen');
-
+  const tittleWindow = document.querySelectorAll(`.tittle-window`);
+  console.log(validationText);
   saveButton.forEach((el, indexing) => {
     if (indexing === column) {
-      if (addItemTextField[column].textContent !== "") {
+      if (addItemTextField[column].textContent !== "" && tittleWindow[column].textContent !== "") {
 
         const taskData = {
           label: userLabel[column].options[userLabel[column].selectedIndex].text,
           priority: priorityChoice[column].options[priorityChoice[column].selectedIndex].text,
-          description: addItems[column].textContent
+          description: addItems[column].textContent,
+          tittle: tittleWindow[column].textContent,
         };
 
         columnsModal[column].style.display = 'none';
@@ -443,7 +464,7 @@ function hideInputBox(column) {
         selectedStorageList.push(taskData);
 
         addItems[column].textContent = '';
-
+        tittleWindow[column].textContent = '';
         updateDOM();
       } else {
         validationText[column].style.display = 'block';
