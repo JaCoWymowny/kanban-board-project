@@ -30,7 +30,6 @@ function rebuildStorage(index, storageColumn, listEl) {
         priority: listEl.children[index].dataset.prio,
         tittle: listEl.children[index].firstElementChild.textContent
     }
-    console.log(taskData.tittle);
     storageColumn.push(taskData);
 }
 

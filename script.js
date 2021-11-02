@@ -440,7 +440,7 @@ function hideInputBox(column) {
   const validationText = document.querySelectorAll('.valid-text');
   const shadowAfterBoxOpen = document.querySelector('.fullscreen');
   const tittleWindow = document.querySelectorAll(`.tittle-window`);
-  console.log(validationText);
+
   saveButton.forEach((el, indexing) => {
     if (indexing === column) {
       if (addItemTextField[column].textContent !== "" && tittleWindow[column].textContent !== "") {
