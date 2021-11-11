@@ -1,7 +1,7 @@
 const dragList = document.querySelector('.drag-list');
 
 // lists + all columns for items
-function htmlTree() {
+const htmlTree = () => {
 
   const mainTitle = document.querySelector('.main-title');
   const site = document.querySelector('body');
@@ -35,7 +35,7 @@ function htmlTree() {
   htmlTreeBranches();
 }
 
-function htmlTreeBranches() {
+const htmlTreeBranches = () => {
 
   const columnAttributeNames = ['backlog', 'progress', 'complete', 'on-hold'];
   const columnNames = ['Backlog', 'In Progress', 'Complete', 'on Hold'];

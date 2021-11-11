@@ -29,7 +29,7 @@ let currentColumn;
 
 
 // Get Arrays from localStorage if available, without default value
-function getSavedColumns() {
+const getSavedColumns = () => {
   if (localStorage.getItem('backlogColumn')) {
     backlogColumn = JSON.parse(localStorage.backlogColumn);
     inProgressColumn = JSON.parse(localStorage.inProgressColumn);
@@ -39,7 +39,7 @@ function getSavedColumns() {
 }
 
 // Set localStorage Arrays
-function updateSavedColumns() {
+const updateSavedColumns = () => {
   columnList = [backlogColumn, inProgressColumn, completeColumn, onHoldColumn];
   const storageNames = ['backlog', 'inProgress', 'complete', 'onHold'];
   storageNames.forEach((storageName, index) => {
@@ -48,13 +48,13 @@ function updateSavedColumns() {
 }
 
 // Filter Array to remove empty values
-function filterArray(array) {
+const filterArray = (array) => {
   const filteredArray = array.filter(item => item !== null);
   return filteredArray;
 }
 
 
-function iconForCurrentTaskPriority() {
+const iconForCurrentTaskPriority = () => {
   const awesomePriorityIcon = document.querySelectorAll('.iconX');
 
   awesomePriorityIcon.forEach((priorityElement) => {
@@ -70,7 +70,7 @@ function iconForCurrentTaskPriority() {
   })
 }
 
-function createItemEl(columnEl, column, index, item) {
+const createItemEl = (columnEl, column, index, item) => {
   const listColumns = document.querySelectorAll('.drag-item-list');
   const shadowAfterBoxOpen = document.querySelector('.fullscreen');
   // List Item
@@ -322,7 +322,7 @@ function createItemEl(columnEl, column, index, item) {
 }
 
 // Update Columns in DOM - Reset HTML, Filter Array, Update localStorage
-function updateDOM() {
+const updateDOM = () => {
   const backlogListEl = document.getElementById('backlog-list');
   const progressListEl = document.getElementById('progress-list');
   const completeListEl = document.getElementById('complete-list');
@@ -355,7 +355,7 @@ function updateDOM() {
   updateSavedColumns();
 }
 
-function UserListToTask(column) {
+const UserListToTask = (column) => {
   const userLabel = document.querySelectorAll('.user-label');
   const priorityChoice = document.querySelectorAll('.priority-choice');
 
@@ -376,7 +376,7 @@ function UserListToTask(column) {
   })
 }
 
-function resetChoice() {
+const resetChoice = () => {
   const userLabel = document.querySelectorAll('.user-label');
   const priorityChoice = document.querySelectorAll('.priority-choice');
 
@@ -389,7 +389,7 @@ function resetChoice() {
 }
 
 // Show Add Item Input Box
-function showInputBox(column) {
+const showInputBox = (column) => {
     const columnsModal = document.querySelectorAll('.columns-modal');
     const validationText = document.querySelectorAll('.valid-text');
     const addItemTextField = document.querySelectorAll('.validate');
@@ -411,7 +411,7 @@ function showInputBox(column) {
     UserListToTask(column);
 }
 
-function closeInputBox(column) {
+const closeInputBox = (column) => {
   const columnsModal = document.querySelectorAll('.columns-modal');
   const addItemTextField = document.querySelectorAll('.validate');
   const iconX = document.querySelectorAll('.close-x');
@@ -430,7 +430,7 @@ function closeInputBox(column) {
 }
 
 // Hide Item Input Box
-function hideInputBox(column) {
+const hideInputBox = (column) => {
   const addItems = document.querySelectorAll('.add-item');
   const columnsModal = document.querySelectorAll('.columns-modal');
   const userLabel = document.querySelectorAll('.user-label');
@@ -478,7 +478,7 @@ function hideInputBox(column) {
 }
 
 // Allows arrays to reflect Drag and Drop items
-function rebuildArrays() {
+const rebuildArrays = () => {
   const backlogListEl = document.getElementById('backlog-list');
   const progressListEl = document.getElementById('progress-list');
   const completeListEl = document.getElementById('complete-list');
@@ -508,25 +508,25 @@ function rebuildArrays() {
 }
 
 // When Item Enters Column Area
-function dragEnter(column) {
+const dragEnter = (column) => {
   const listColumns = document.querySelectorAll('.drag-item-list');
   listColumns[column].classList.add('over');
   currentColumn = column;
 }
 
 // When Item Starts Dragging
-function drag(e) {
+const drag = (e) => {
   draggedItem = e.target;
   dragging = true;
 }
 
 // Column Allows for Item to Drop
-function allowDrop(e) {
+const allowDrop = (e) => {
   e.preventDefault();
 }
 
 // Dropping Item in Column
-function drop(e) {
+const drop = (e) => {
   e.preventDefault();
   const listColumns = document.querySelectorAll('.drag-item-list');
 

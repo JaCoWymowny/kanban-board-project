@@ -1,13 +1,13 @@
 
 // HTML TREE
-function allColumnAttribute(element, drag, column, number) {
+const allColumnAttribute = (element, drag, column, number) => {
     element.classList.add(drag);
     element.classList.add(column);
     element.setAttribute(`id`, `${number}`);
 }
 
 // color and icon for created task after load and save changes
-function addIconsStyles(element, color) {
+const addIconsStyles = (element, color) => {
     element.classList.add('fab');
     element.classList.add('fa-gripfire');
     element.classList.add('fa-2x');
@@ -15,7 +15,7 @@ function addIconsStyles(element, color) {
 }
 
 // helper for updateDOM function
-function createElementOnCurrentColumn(listEl, storageColumn, column) {
+const createElementOnCurrentColumn = (listEl, storageColumn, column) => {
     listEl.textContent = '';
     storageColumn.forEach((item, index) => {
         createItemEl(listEl, column, index, item);
@@ -23,7 +23,7 @@ function createElementOnCurrentColumn(listEl, storageColumn, column) {
 }
 
 // helper for rebuildArray after save changes
-function rebuildStorage(index, storageColumn, listEl) {
+const rebuildStorage = (index, storageColumn, listEl) => {
     const taskData = {
         description: listEl.children[index].lastElementChild.textContent,
         label: listEl.children[index].dataset.worker,
@@ -34,7 +34,7 @@ function rebuildStorage(index, storageColumn, listEl) {
 }
 
 // add attribute to newly created task
-function addAttributesToTask(element, taskAttributes) {
+const addAttributesToTask = (element, taskAttributes) => {
     element.id = taskAttributes.id;
     element.dataset.worker = taskAttributes.label;
     element.dataset.prio = taskAttributes.priority;
@@ -45,14 +45,13 @@ function addAttributesToTask(element, taskAttributes) {
 }
 
 //create save and delete button after open curren task
-function createTaskButton(element, firstClass, secondClass, text) {
+const createTaskButton = (element, firstClass, secondClass, text) => {
     element.classList.add(firstClass);
     element.classList.add(secondClass);
     element.textContent = text;
 }
 
-// create x icon to create item
-function createXIcon(document) {
+const createXIcon = (document) => {
     const icon = document.createElement(`i`);
     icon.classList.add(`far`);
     icon.classList.add(`fa-times-circle`);
@@ -60,13 +59,13 @@ function createXIcon(document) {
     return icon
 }
 
-function containerForTittleElement(document) {
+const containerForTittleElement = (document) => {
     const container = document.createElement(`div`);
     container.classList.add(`tittle-container`);
     return container
 }
 
-function addTittleToModal(document, task) {
+const addTittleToModal = (document, task) => {
     const tittle = document.createElement('span');
     tittle.classList.add('tittle-window');
     tittle.classList.add('first-style');
@@ -75,7 +74,7 @@ function addTittleToModal(document, task) {
     return tittle
 }
 
-function addSpecificationToModal(document,content) {
+const addSpecificationToModal = (document,content) => {
     const text = document.createElement('span');
     text.classList.add(`first-style`);
     text.textContent = content;
